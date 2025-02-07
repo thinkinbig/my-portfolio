@@ -16,6 +16,7 @@ export const de = {
     contact: "Kontakt",
   },
   skills: {
+    distribution: 'Fähigkeitsverteilung',
     frontend: {
       title: "Frontend-Entwicklung",
       items: [

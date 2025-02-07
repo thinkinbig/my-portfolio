@@ -16,6 +16,7 @@ export const en = {
     contact: "Contact",
   },
   skills: {
+    distribution: 'Skills Distribution',
     frontend: {
       title: "Frontend Development",
       items: [

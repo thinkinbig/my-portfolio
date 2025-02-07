@@ -8,30 +8,136 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { Tag } from "@/components/ui/Tag";
 import ReactMarkdown from 'react-markdown';
+import React from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 type DetailSection = {
   title: string;
   content: string[] | string;
 };
 
+function WebIDEPreview() {
+  const [code, setCode] = React.useState(`public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}`);
+
+  return (
+    <div className="w-full bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-lg shadow-2xl">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between mb-4 px-4 py-2 bg-gray-800 rounded-t-lg border-b border-gray-700">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
+        <div className="text-gray-400 text-sm">Main.java</div>
+      </div>
+
+      <div className="flex h-[400px]">
+        {/* Sidebar */}
+        <div className="w-48 bg-gray-800 border-r border-gray-700 p-2">
+          <div className="flex items-center text-gray-400 text-sm mb-2 p-2 hover:bg-gray-700 rounded cursor-pointer">
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+            Project Files
+          </div>
+          <div className="pl-4 text-gray-500 text-sm">
+            <div className="p-1 hover:text-gray-300 cursor-pointer bg-primary/10 text-primary rounded">📄 Main.java</div>
+            <div className="p-1 hover:text-gray-300 cursor-pointer">📄 Utils.java</div>
+            <div className="p-1 hover:text-gray-300 cursor-pointer">📄 Config.java</div>
+          </div>
+        </div>
+
+        {/* Editor */}
+        <div className="flex-1 bg-gray-900 p-4 relative group">
+          <div className="absolute inset-0 pointer-events-none">
+            <SyntaxHighlighter
+              language="java"
+              style={vscDarkPlus}
+              customStyle={{
+                background: 'transparent',
+                margin: 0,
+                padding: 0,
+                height: '100%',
+              }}
+              lineNumberStyle={{
+                minWidth: '2.5em',
+                paddingRight: '1em',
+                color: '#666',
+                userSelect: 'none',
+              }}
+              showLineNumbers
+            >
+              {code}
+            </SyntaxHighlighter>
+          </div>
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            className="w-full h-full bg-transparent text-transparent font-mono text-sm resize-none focus:outline-none caret-white"
+            spellCheck="false"
+            style={{
+              lineHeight: '1.5',
+              tabSize: 4,
+            }}
+          />
+          <div className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button className="px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary rounded text-sm transition-colors">
+              Run ▶
+            </button>
+          </div>
+        </div>
+
+        {/* Terminal */}
+        <div className="w-full max-w-md bg-black p-2 border-l border-gray-700">
+          <div className="flex justify-between items-center mb-2 text-gray-400 text-sm">
+            <span>Terminal</span>
+            <button className="hover:text-gray-200">⟳</button>
+          </div>
+          <div className="text-gray-300 font-mono text-sm">
+            <div className="mb-1">$ javac Main.java</div>
+            <div className="mb-1">$ java Main</div>
+            <div className="text-green-400">Hello, World!</div>
+            <div className="text-gray-500 animate-pulse">▋</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DetailBlock({ title, content }: DetailSection) {
+  const { language } = useLanguage();
   const linkStyle = "text-primary font-medium hover:underline inline-flex items-center gap-1 after:content-['↗'] after:text-xs";
+
+  const isTechnologies = title === getI18nText(language, 'projects.details.technologies');
+  const isRequirements = title === getI18nText(language, 'projects.details.requirements');
+  const isChallenges = title === getI18nText(language, 'projects.details.challenges');
+  const isArchitecture = title === getI18nText(language, 'projects.details.architecture');
 
   return (
     <div className="mb-12 animate-fade-in">
       <div className="flex items-center mb-6">
         <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
-          {title.includes('技术') ? (
+          {isTechnologies ? (
             <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
-          ) : title.includes('要求') ? (
+          ) : isRequirements ? (
             <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-          ) : title.includes('挑战') ? (
+          ) : isChallenges ? (
             <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          ) : isArchitecture ? (
+            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
           ) : (
             <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,11 +232,27 @@ function ArchitectureSection({ title, description, image }: {
   description: string;
   image: string;
 }) {
+  const { language } = useLanguage();
   const linkStyle = "text-primary font-medium hover:underline inline-flex items-center gap-1 after:content-['↗'] after:text-xs";
 
   return (
-    <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-primary">{title}</h2>
+    <div 
+      className="mb-12 animate-fade-in"
+      style={{ 
+        animation: `fadeInUp 0.5s ease-out forwards`,
+        opacity: 0,
+        transform: 'translateY(20px)'
+      }}
+    >
+      <div className="flex items-center mb-6">
+        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+          <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold text-primary">{title}</h2>
+      </div>
+
       <div className="text-secondary mb-4 leading-relaxed">
         <ReactMarkdown
           components={{
@@ -147,12 +269,14 @@ function ArchitectureSection({ title, description, image }: {
           {description}
         </ReactMarkdown>
       </div>
-      <div className="relative h-[400px] w-full rounded-lg overflow-hidden border border-foreground/10">
+      <div className="w-full rounded-lg overflow-hidden bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-8 shadow-lg flex justify-center group">
         <Image
           src={image}
           alt={title}
-          fill
-          className="object-contain bg-white dark:bg-gray-900 p-4"
+          width={1200}
+          height={800}
+          className="w-full h-auto object-contain rounded-lg shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+          priority
         />
       </div>
     </div>
@@ -224,6 +348,12 @@ export function ProjectDetail() {
       title: getI18nText(language, 'projects.details.introduction'),
       content: project.introduction
     },
+    ...(project.architecture?.description ? [{
+      title: getI18nText(language, 'projects.details.architecture'),
+      content: project.architecture.description,
+      isArchitecture: true,
+      image: project.architectureImage
+    }] : []),
     {
       title: getI18nText(language, 'projects.details.requirements'),
       content: project.requirements
@@ -244,11 +374,11 @@ export function ProjectDetail() {
       
       <div className="pt-24 container mx-auto px-4">
         <Link 
-          href="/" 
-          className="text-primary mb-8 inline-flex items-center hover:underline"
+          href="/"
+          className="mb-8 inline-flex items-center px-4 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-300 group"
         >
           <svg
-            className="w-4 h-4 mr-2"
+            className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:-translate-x-1"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -264,13 +394,19 @@ export function ProjectDetail() {
         </Link>
 
         <div className="bg-background rounded-lg shadow-xl overflow-hidden">
-          {project.image && (
-            <div className="w-full h-64 relative">
+          {project.id === 'web-ide' ? (
+            <div className="p-8 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+              <WebIDEPreview />
+            </div>
+          ) : project.image && (
+            <div className="w-full relative flex justify-center bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-8 shadow-inner">
               <Image
                 src={project.image}
                 alt={project.title}
-                fill
-                className="object-cover"
+                width={1200}
+                height={600}
+                className="w-full h-auto object-contain rounded-lg shadow-lg"
+                priority
               />
             </div>
           )}
@@ -299,20 +435,21 @@ export function ProjectDetail() {
             </div>
 
             {sections.map((section, index) => (
-              <DetailBlock
-                key={index}
-                title={section.title}
-                content={section.content}
-              />
+              section.isArchitecture ? (
+                <ArchitectureSection
+                  key={index}
+                  title={section.title}
+                  description={section.content as string}
+                  image={section.image as string}
+                />
+              ) : (
+                <DetailBlock
+                  key={index}
+                  title={section.title}
+                  content={section.content}
+                />
+              )
             ))}
-
-            {project.architecture?.description && project.architectureImage && (
-              <ArchitectureSection
-                title={getI18nText(language, 'projects.details.architecture')}
-                description={project.architecture.description}
-                image={project.architectureImage}
-              />
-            )}
           </div>
         </div>
       </div>
