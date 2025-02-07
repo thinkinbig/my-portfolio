@@ -17,6 +17,12 @@ export const de = {
   },
   skills: {
     distribution: 'Fähigkeitsverteilung',
+    labels: {
+      Frontend: 'Frontend',
+      Backend: 'Backend',
+      DevOps: 'DevOps',
+      'ML/AI': 'ML/KI'
+    },
     frontend: {
       title: "Frontend-Entwicklung",
       items: [

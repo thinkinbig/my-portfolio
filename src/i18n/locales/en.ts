@@ -17,6 +17,12 @@ export const en = {
   },
   skills: {
     distribution: 'Skills Distribution',
+    labels: {
+      Frontend: 'Frontend',
+      Backend: 'Backend',
+      DevOps: 'DevOps',
+      'ML/AI': 'ML/AI'
+    },
     frontend: {
       title: "Frontend Development",
       items: [

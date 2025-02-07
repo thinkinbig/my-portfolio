@@ -243,6 +243,12 @@ export const zh = {
   },
   skills: {
     distribution: '技能分布',
+    labels: {
+      Frontend: '前端开发',
+      Backend: '后端开发',
+      DevOps: '运维开发',
+      'ML/AI': '机器学习'
+    },
     frontend: {
       title: "前端开发",
       items: [

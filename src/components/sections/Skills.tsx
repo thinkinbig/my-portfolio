@@ -19,29 +19,11 @@ type SkillsData = {
   [key: string]: SkillCategory;
 };
 
-type SkillKey = 'Frontend' | 'Backend' | 'DevOps' | 'ML/AI';
-type LangLabels = Record<SkillKey, string>;
-type SkillLabels = Record<'zh' | 'en' | 'de', LangLabels>;
-
-const skillLabels: SkillLabels = {
-  zh: {
-    Frontend: '前端开发',
-    Backend: '后端开发',
-    DevOps: '运维开发',
-    'ML/AI': '机器学习'
-  },
-  en: {
-    Frontend: 'Frontend',
-    Backend: 'Backend',
-    DevOps: 'DevOps',
-    'ML/AI': 'ML/AI'
-  },
-  de: {
-    Frontend: 'Frontend',
-    Backend: 'Backend',
-    DevOps: 'DevOps',
-    'ML/AI': 'ML/KI'
-  }
+type Skill = {
+  name: string;
+  value: number;
+  color: string;
+  icon: string;
 };
 
 function SkillBar({ name, level, description }: SkillItem) {
@@ -126,8 +108,7 @@ function SkillBar({ name, level, description }: SkillItem) {
   );
 }
 
-function SkillDistribution() {
-  const { language } = useLanguage();
+function SkillPieChart({ skills }: { skills: Skill[] }) {
   const [isVisible, setIsVisible] = React.useState(false);
   const [hoveredSkill, setHoveredSkill] = React.useState<string | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
@@ -149,6 +130,70 @@ function SkillDistribution() {
     return () => observer.disconnect();
   }, []);
 
+  const total = skills.reduce((sum, skill) => sum + skill.value, 0);
+  let startAngle = 0;
+  const radius = 40;
+  const strokeWidth = 12;
+  const center = radius + strokeWidth;
+  const size = (radius + strokeWidth) * 2;
+
+  return (
+    <div ref={ref} className="relative" style={{ width: size, height: size }}>
+      <svg className="w-full h-full transform -rotate-90">
+        {skills.map((skill, i) => {
+          const percentage = skill.value / total;
+          const dashArray = radius * Math.PI * 2;
+          const dashOffset = dashArray * (1 - percentage);
+          const isHovered = hoveredSkill === skill.name;
+          
+          const rotation = (startAngle / total) * 360;
+          startAngle += skill.value;
+
+          return (
+            <circle
+              key={skill.name}
+              cx={center}
+              cy={center}
+              r={radius}
+              fill="none"
+              stroke={skill.color}
+              strokeWidth={isHovered ? strokeWidth + 4 : strokeWidth}
+              strokeDasharray={dashArray}
+              strokeDashoffset={isVisible ? dashOffset : dashArray}
+              strokeLinecap="round"
+              transform={`rotate(${rotation} ${center} ${center})`}
+              style={{
+                transition: `all 1s ease-out ${i * 0.2}s`,
+                opacity: isVisible ? (isHovered ? 1 : 0.8) : 0,
+                cursor: 'pointer'
+              }}
+              onMouseEnter={() => setHoveredSkill(skill.name)}
+              onMouseLeave={() => setHoveredSkill(null)}
+            />
+          );
+        })}
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        {hoveredSkill ? (
+          <div className="text-center">
+            <div className="text-3xl mb-1">{skills.find(s => s.name === hoveredSkill)?.icon}</div>
+            <div className="text-xl font-bold text-primary">
+              {skills.find(s => s.name === hoveredSkill)?.value}%
+            </div>
+          </div>
+        ) : (
+          <div className="text-center">
+            <div className="text-3xl mb-1">💻</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SkillDistribution() {
+  const { language } = useLanguage();
+  
   const skills = [
     { name: 'Frontend', value: 35, color: '#3B82F6', icon: '⚛️' },
     { name: 'Backend', value: 40, color: '#10B981', icon: '🛠️' },
@@ -156,95 +201,29 @@ function SkillDistribution() {
     { name: 'ML/AI', value: 10, color: '#8B5CF6', icon: '🤖' }
   ];
 
-  const total = skills.reduce((sum, skill) => sum + skill.value, 0);
-  const currentAngle = 0;
-  const radius = 40;
-  const strokeWidth = 12;
-  const center = radius + strokeWidth;
-  const size = (radius + strokeWidth) * 2;
-
   return (
-    <div ref={ref} className="flex flex-col items-center mb-16">
+    <div className="flex flex-col items-center mb-16">
       <h3 className="text-2xl font-bold mb-8 text-primary flex items-center gap-3">
         <div className="w-2 h-2 rounded-full bg-primary"></div>
         {getI18nText(language, 'skills.distribution')}
       </h3>
       <div className="flex flex-col md:flex-row items-center gap-8">
-        <div className="relative" style={{ width: size, height: size }}>
-          <svg className="w-full h-full transform -rotate-90">
-            {skills.map((skill, i) => {
-              const percentage = skill.value / total;
-              const dashArray = radius * Math.PI * 2;
-              const dashOffset = dashArray * (1 - percentage);
-              const isHovered = hoveredSkill === skill.name;
-
-              return (
-                <circle
-                  key={skill.name}
-                  cx={center}
-                  cy={center}
-                  r={radius}
-                  fill="none"
-                  stroke={skill.color}
-                  strokeWidth={isHovered ? strokeWidth + 4 : strokeWidth}
-                  strokeDasharray={dashArray}
-                  strokeDashoffset={isVisible ? dashOffset : dashArray}
-                  strokeLinecap="round"
-                  transform={`rotate(${currentAngle * (180 / Math.PI)} ${center} ${center})`}
-                  style={{
-                    transition: `all 1s ease-out ${i * 0.2}s`,
-                    opacity: isVisible ? (isHovered ? 1 : 0.8) : 0,
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={() => setHoveredSkill(skill.name)}
-                  onMouseLeave={() => setHoveredSkill(null)}
-                />
-              );
-            })}
-            <circle
-              cx={center}
-              cy={center}
-              r={radius - strokeWidth}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-              className="text-foreground/10"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            {hoveredSkill ? (
-              <div className="text-center">
-                <div className="text-3xl mb-1">{skills.find(s => s.name === hoveredSkill)?.icon}</div>
-                <div className="text-xl font-bold text-primary">
-                  {skills.find(s => s.name === hoveredSkill)?.value}%
-                </div>
-              </div>
-            ) : (
-              <div className="text-center">
-                <div className="text-3xl mb-1">💻</div>
-                <div className="text-sm text-secondary">Hover for details</div>
-              </div>
-            )}
-          </div>
-        </div>
+        <SkillPieChart skills={skills} />
         <div className="grid grid-cols-2 gap-4">
           {skills.map((skill) => (
             <div 
               key={skill.name}
               className="flex items-center gap-3 p-2 rounded-lg transition-all duration-300"
               style={{
-                opacity: isVisible ? 1 : 0,
-                transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+                opacity: 1,
+                transform: 'translateY(0)',
                 transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                backgroundColor: hoveredSkill === skill.name ? `${skill.color}20` : 'transparent'
               }}
-              onMouseEnter={() => setHoveredSkill(skill.name)}
-              onMouseLeave={() => setHoveredSkill(null)}
             >
               <div className="text-2xl">{skill.icon}</div>
               <div>
                 <div className="text-sm font-medium text-primary">
-                  {skillLabels[language][skill.name]}
+                  {getI18nText(language, `skills.labels.${skill.name}`)}
                 </div>
                 <div className="text-xs text-secondary">{skill.value}%</div>
               </div>
