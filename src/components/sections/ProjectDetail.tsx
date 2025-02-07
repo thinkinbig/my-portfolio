@@ -151,10 +151,10 @@ function DetailBlock({ title, content }: DetailSection) {
       {Array.isArray(content) ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {content.map((item, index) => (
-            <div 
+            <div
               key={index}
               className="p-4 rounded-lg border border-foreground/10 bg-background hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
-              style={{ 
+              style={{
                 animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
                 opacity: 0,
                 transform: 'translateY(20px)'
@@ -232,7 +232,7 @@ function ArchitectureSection({ title, description, image }: {
   description: string;
   image: string;
 }) {
-  const { language } = useLanguage();
+  useLanguage();
   const linkStyle = "text-primary font-medium hover:underline inline-flex items-center gap-1 after:content-['↗'] after:text-xs";
 
   return (

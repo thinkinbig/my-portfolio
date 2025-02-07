@@ -108,7 +108,11 @@ function SkillBar({ name, level, description }: SkillItem) {
   );
 }
 
-function SkillPieChart({ skills }: { skills: Skill[] }) {
+function SkillPieChart({ 
+  skills, 
+}: { 
+  skills: Skill[];
+}) {
   const [isVisible, setIsVisible] = React.useState(false);
   const [hoveredSkill, setHoveredSkill] = React.useState<string | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
@@ -214,11 +218,6 @@ function SkillDistribution() {
             <div 
               key={skill.name}
               className="flex items-center gap-3 p-2 rounded-lg transition-all duration-300"
-              style={{
-                opacity: 1,
-                transform: 'translateY(0)',
-                transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
             >
               <div className="text-2xl">{skill.icon}</div>
               <div>
