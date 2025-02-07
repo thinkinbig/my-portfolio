@@ -18,11 +18,29 @@ type DetailSection = {
 };
 
 function WebIDEPreview() {
-  const [code, setCode] = React.useState(`public class Main {
+  const [showOutput, setShowOutput] = React.useState(false);
+  const [currentLine, setCurrentLine] = React.useState(0);
+  const code = `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
-}`);
+}`;
+
+  const outputLines = [
+    { content: '$ javac Main.java', delay: 500 },
+    { content: '$ java Main', delay: 1000 },
+    { content: 'Hello, World!', delay: 1500, className: 'text-green-400' }
+  ];
+
+  const handleRun = () => {
+    setShowOutput(true);
+    setCurrentLine(0);
+    outputLines.forEach((_, index) => {
+      setTimeout(() => {
+        setCurrentLine(prev => prev + 1);
+      }, outputLines[index].delay);
+    });
+  };
 
   return (
     <div className="w-full bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-lg shadow-2xl">
@@ -54,39 +72,33 @@ function WebIDEPreview() {
 
         {/* Editor */}
         <div className="flex-1 bg-gray-900 p-4 relative group">
-          <div className="absolute inset-0 pointer-events-none">
-            <SyntaxHighlighter
-              language="java"
-              style={vscDarkPlus}
-              customStyle={{
-                background: 'transparent',
-                margin: 0,
-                padding: 0,
-                height: '100%',
-              }}
-              lineNumberStyle={{
-                minWidth: '2.5em',
-                paddingRight: '1em',
-                color: '#666',
-                userSelect: 'none',
-              }}
-              showLineNumbers
-            >
-              {code}
-            </SyntaxHighlighter>
-          </div>
-          <textarea
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="w-full h-full bg-transparent text-transparent font-mono text-sm resize-none focus:outline-none caret-white"
-            spellCheck="false"
-            style={{
-              lineHeight: '1.5',
-              tabSize: 4,
+          <SyntaxHighlighter
+            language="java"
+            style={vscDarkPlus}
+            customStyle={{
+              background: 'transparent',
+              margin: 0,
+              padding: '0.5em 0',
+              height: '100%',
+              fontSize: '14px',
+              lineHeight: '21px',
+              fontFamily: 'inherit'
             }}
-          />
+            lineNumberStyle={{
+              minWidth: '2.5em',
+              paddingRight: '1em',
+              color: '#666',
+              userSelect: 'none',
+            }}
+            showLineNumbers
+          >
+            {code}
+          </SyntaxHighlighter>
           <div className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button className="px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary rounded text-sm transition-colors">
+            <button 
+              onClick={handleRun}
+              className="px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary rounded text-sm transition-colors"
+            >
               Run ▶
             </button>
           </div>
@@ -96,13 +108,32 @@ function WebIDEPreview() {
         <div className="w-full max-w-md bg-black p-2 border-l border-gray-700">
           <div className="flex justify-between items-center mb-2 text-gray-400 text-sm">
             <span>Terminal</span>
-            <button className="hover:text-gray-200">⟳</button>
+            <button 
+              onClick={() => {
+                setShowOutput(false);
+                setCurrentLine(0);
+              }}
+              className="hover:text-gray-200"
+            >
+              ⟳
+            </button>
           </div>
           <div className="text-gray-300 font-mono text-sm">
-            <div className="mb-1">$ javac Main.java</div>
-            <div className="mb-1">$ java Main</div>
-            <div className="text-green-400">Hello, World!</div>
-            <div className="text-gray-500 animate-pulse">▋</div>
+            {outputLines.map((line, index) => (
+              <div
+                key={index}
+                className={`mb-1 transition-all duration-300 ${
+                  showOutput && index < currentLine
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-2'
+                } ${line.className || ''}`}
+              >
+                {line.content}
+              </div>
+            ))}
+            {showOutput && currentLine >= outputLines.length && (
+              <div className="text-gray-500 animate-pulse">▋</div>
+            )}
           </div>
         </div>
       </div>
