@@ -18,40 +18,98 @@ function DetailBlock({ title, content }: DetailSection) {
   const linkStyle = "text-primary font-medium hover:underline inline-flex items-center gap-1 after:content-['↗'] after:text-xs";
 
   return (
-    <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-primary">{title}</h2>
+    <div className="mb-12 animate-fade-in">
+      <div className="flex items-center mb-6">
+        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+          {title.includes('技术') ? (
+            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+          ) : title.includes('要求') ? (
+            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          ) : title.includes('挑战') ? (
+            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          )}
+        </div>
+        <h2 className="text-2xl font-bold text-primary">{title}</h2>
+      </div>
+
       {Array.isArray(content) ? (
-        <ul className="space-y-2 list-disc list-inside text-secondary">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {content.map((item, index) => (
-            <li key={index} className="leading-relaxed">
+            <div 
+              key={index}
+              className="p-4 rounded-lg border border-foreground/10 bg-background hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
+              style={{ 
+                animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
+                opacity: 0,
+                transform: 'translateY(20px)'
+              }}
+            >
               <ReactMarkdown
                 components={{
-                  a: ({ node, ...props }) => (
-                    <a 
-                      {...props} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className={linkStyle}
-                    />
+                  h3: ({...props}) => (
+                    <h3 className="text-lg font-semibold mb-3 text-primary flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                      <span {...props} />
+                    </h3>
+                  ),
+                  h4: ({...props}) => (
+                    <h4 className="text-base font-medium mb-2 text-primary/80 flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-primary/40" />
+                      <span {...props} />
+                    </h4>
+                  ),
+                  ul: ({...props}) => (
+                    <ul className="space-y-2 ml-4" {...props} />
+                  ),
+                  li: ({...props}) => (
+                    <li className="text-secondary hover:text-foreground transition-colors flex items-center gap-2 before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full before:bg-primary/20" {...props} />
+                  ),
+                  strong: ({...props}) => (
+                    <strong className="font-semibold text-primary/90" {...props} />
                   ),
                 }}
               >
                 {item}
               </ReactMarkdown>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
-        <div className="text-secondary leading-relaxed">
+        <div className="prose prose-primary dark:prose-invert max-w-none">
           <ReactMarkdown
             components={{
-              a: ({ node, ...props }) => (
+              h3: ({...props}) => (
+                <h3 className="text-xl font-semibold mb-3 text-primary/90" {...props} />
+              ),
+              h4: ({...props}) => (
+                <h4 className="text-lg font-medium mb-2 text-primary/80" {...props} />
+              ),
+              ul: ({...props}) => (
+                <ul className="space-y-2 ml-4" {...props} />
+              ),
+              li: ({...props}) => (
+                <li className="text-secondary hover:text-foreground transition-colors list-disc" {...props} />
+              ),
+              a: ({...props}) => (
                 <a 
                   {...props} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className={linkStyle}
                 />
+              ),
+              strong: ({...props}) => (
+                <strong className="font-semibold text-foreground" {...props} />
               ),
             }}
           >
@@ -76,7 +134,7 @@ function ArchitectureSection({ title, description, image }: {
       <div className="text-secondary mb-4 leading-relaxed">
         <ReactMarkdown
           components={{
-            a: ({ node, ...props }) => (
+            a: ({...props}) => (
               <a 
                 {...props} 
                 target="_blank" 
@@ -116,7 +174,7 @@ function Notice({ children }: { children: React.ReactNode }) {
           <div className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
             <ReactMarkdown
               components={{
-                a: ({ node, ...props }) => (
+                a: ({...props}) => (
                   <a 
                     {...props} 
                     target="_blank" 
