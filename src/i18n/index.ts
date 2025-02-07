@@ -11,9 +11,9 @@ export const i18n = {
 export type Language = keyof typeof i18n;
 export type I18nKey = keyof typeof en;
 
-export function getI18nText(lang: Language, key: string) {
+export function getI18nText<T = string>(lang: Language, key: string): T {
   return key.split('.').reduce<unknown>((obj, key) => 
     (obj as Record<string, unknown>)[key], 
     i18n[lang]
-  ) as string;
+  ) as T;
 } 
