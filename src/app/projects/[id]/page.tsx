@@ -1,15 +1,19 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { ProjectDetail } from "@/components/sections/ProjectDetail";
 import WebIDEProject from '../web-ide/page';
+import SystemDesignProject from '../tum-sysprog/page';
+import NotFound from '@/app/not-found';
 
 export default function ProjectPage() {
   const { id } = useParams();
   
-  if (id === 'web-ide') {
-    return <WebIDEProject />;
+  switch (id) {
+    case 'web-ide':
+      return <WebIDEProject />;
+    case 'tum-sysprog':
+      return <SystemDesignProject />;
+    default:
+      return <NotFound />;
   }
-
-  return <ProjectDetail />;
 } 

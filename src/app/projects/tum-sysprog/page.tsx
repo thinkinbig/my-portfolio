@@ -2,17 +2,15 @@
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getI18nText } from "@/i18n";
-import { WebIDEPreview } from "@/components/previews/WebIDEPreview";
 import Link from "next/link";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { Header } from "@/components/layout/Header";
-import { Notice } from "@/components/ui/Notice";
 import { Project } from "@/types/project";
 
-export default function WebIDEProject() {
+export default function TUMSysProg() {
   const { language } = useLanguage();
-  const project = (getI18nText<Project[]>(language, 'projects.items')).find(p => p.id === 'web-ide');
+  const project = (getI18nText<Project[]>(language, 'projects.items')).find(p => p.id === 'tum-sysprog');
 
   if (!project) return null;
 
@@ -50,16 +48,6 @@ export default function WebIDEProject() {
             </h1>
             <div className="h-1 w-32 mx-auto bg-gradient-to-r from-primary to-transparent rounded-full" />
           </div>
-
-          {/* Preview Section */}
-          <div className="bg-gradient-to-b from-background to-foreground/5 rounded-2xl p-8 shadow-xl">
-            <WebIDEPreview />
-          </div>
-
-          {/* Notice Section */}
-          <Notice variant="info">
-            {project.notice}
-          </Notice>
 
           {/* Content Sections */}
           <div className="prose dark:prose-invert max-w-none">

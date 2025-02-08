@@ -5,14 +5,7 @@ import { getI18nText } from "@/i18n";
 import Link from "next/link";
 import Image from "next/image";
 import { Tag } from "@/components/ui/Tag";
-
-type Project = {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  image?: string;
-};
+import { Project } from "@/types/project";
 
 export function Projects() {
   const { language } = useLanguage();
