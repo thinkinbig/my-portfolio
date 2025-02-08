@@ -166,9 +166,10 @@ export const zh = {
         image: "/images/web-ide.jpg",
         architecture: {
           title: "系统架构图",
-          description: "该系统采用微服务架构，通过 API 网关统一管理请求，各个微服务独立部署和扩展。系统部署在 Google Cloud Platform，[点击访问](http://34.32.7.125)。服务注册中心使用 Eureka，支持服务自动发现和注册。"
+          description: "该系统采用微服务架构，通过 API 网关统一管理请求，各个微服务独立部署和扩展。系统部署在 Google Cloud Platform，[点击访问](http://34.32.7.125)。服务注册中心使用 Eureka，支持服务自动发现和注册。",
+          architectureImage: "/images/web-ide-arch.png"
         },
-        architectureImage: "/images/web-ide-arch.png"
+        notice: "注意：此演示项目部署在 Google Cloud Platform 上（[点击访问](http://34.32.7.125)），将持续运行至 2025 年 5 月 1 日。",
       },
       {
         id: "tum-sysprog",
@@ -235,9 +236,8 @@ export const zh = {
         image: "/images/erp-plugins.jpg",
         architecture: {
           title: "系统架构图",
-          description: "展示了插件系统的整体架构，包括与 ERP 核心系统的集成方式，以及数据流转过程。"
+          description: "展示了插件系统的整体架构，包括与 ERP 核心系统的集成方式，以及数据流转过程。",
         },
-        architectureImage: "/images/erp-arch.png"
       }
     ]
   },

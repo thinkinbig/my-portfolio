@@ -213,9 +213,10 @@ All services run in Docker containers and are automatically deployed to Google C
         image: "/images/web-ide.jpg",
         architecture: {
           title: "System Architecture",
-          description: "The system adopts a microservices architecture, managing requests through an API Gateway, with independently deployed and scalable microservices. Deployed on Google Cloud Platform, [click to visit](http://34.32.7.125). Service registry uses Eureka for service auto-discovery and registration."
+          description: "The system adopts a microservices architecture, managing requests through an API Gateway, with independently deployed and scalable microservices. Deployed on Google Cloud Platform, [click to visit](http://34.32.7.125). Service registry uses Eureka for service auto-discovery and registration.",
+          architectureImage: "/images/web-ide-arch.png"
         },
-        architectureImage: "/images/web-ide-arch.png"
+        notice: "Notice: This demo project is hosted on Google Cloud Platform ([click to visit](http://34.32.7.125)) and will be available until May 1st, 2025.",
       },
       {
         id: "tum-sysprog",
@@ -284,7 +285,6 @@ All services run in Docker containers and are automatically deployed to Google C
           title: "System Architecture",
           description: "Illustrates the overall plugin system architecture, including integration with the ERP core system and data flow processes."
         },
-        architectureImage: "/images/erp-arch.png"
       }
     ]
   }

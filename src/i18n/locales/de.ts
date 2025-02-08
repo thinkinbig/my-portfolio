@@ -213,9 +213,10 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
         image: "/images/web-ide.jpg",
         architecture: {
           title: "Systemarchitektur",
-          description: "Das System verwendet eine Mikroservices-Architektur, verwaltet Anfragen über ein API-Gateway und verfügt über unabhängig bereitgestellte und skalierbare Mikroservices. Bereitgestellt auf Google Cloud Platform, [hier klicken](http://34.32.7.125). Service-Registry nutzt Eureka für Service-Auto-Discovery und -Registrierung."
+          description: "Das System verwendet eine Mikroservices-Architektur, verwaltet Anfragen über ein API-Gateway und verfügt über unabhängig bereitgestellte und skalierbare Mikroservices. Bereitgestellt auf Google Cloud Platform, [hier klicken](http://34.32.7.125). Service-Registry nutzt Eureka für Service-Auto-Discovery und -Registrierung.",
+          architectureImage: "/images/web-ide-arch.png"
         },
-        architectureImage: "/images/web-ide-arch.png"
+        notice: "Hinweis: Dieses Demo-Projekt ist auf Google Cloud Platform gehostet ([hier klicken](http://34.32.7.125)) und wird bis zum 1. Mai 2025 verfügbar sein.",
       },
       {
         id: "tum-sysprog",
@@ -284,7 +285,6 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
           title: "Systemarchitektur",
           description: "Veranschaulicht die Gesamtarchitektur des Plugin-Systems, einschließlich der Integration mit dem ERP-Kernsystem und der Datenflussprozesse."
         },
-        architectureImage: "/images/erp-arch.png"
       }
     ]
   }
