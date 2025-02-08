@@ -207,7 +207,17 @@ All services run in Docker containers and are automatically deployed to Google C
           "How to ensure system scalability and fault tolerance (service auto-scaling)",
           "How to build efficient CI/CD pipelines (automated testing and deployment)",
           "How to optimize container image size and build speed (reducing deployment time)",
-          "How to implement service high availability (30-60s service auto-recovery)"
+          "How to implement service high availability (30-60s service auto-recovery)",
+          "### Stakeholder Alignment\n" +
+          "- Different stakeholders had varying expectations for the same features\n" +
+          "- Production managers focused on efficiency metrics\n" +
+          "- Financial team emphasized cost tracking accuracy\n" +
+          "- Warehouse staff prioritized inventory operation simplicity\n" +
+          "- Solutions implemented:\n" +
+          "  - Created interactive prototypes for feature alignment\n" +
+          "  - Conducted regular cross-department workshops\n" +
+          "  - Developed modular features to accommodate different needs\n" +
+          "  - Established clear feature prioritization process"
         ],
         tags: ["Spring Cloud", "Angular", "Microservices", "Docker"],
         image: "/images/web-ide.jpg",
@@ -261,7 +271,9 @@ All services run in Docker containers and are automatically deployed to Google C
           "Develop data analysis and report generation features",
           "Provide REST API interfaces for third-party system integration",
           "Ensure plugin performance and stability",
-          "Create comprehensive technical documentation and user manuals"
+          "Create comprehensive technical documentation and user manuals",
+          "Implement dynamic inventory monitoring and alerting based on supply chain BOM tree",
+          "Develop cost management and analysis system for supply chain optimization"
         ],
         technologies: [
           "Backend: C# / .NET Framework",
@@ -273,14 +285,31 @@ All services run in Docker containers and are automatically deployed to Google C
           "Documentation: Swagger/OpenAPI"
         ],
         challenges: [
-          "Extending functionality without impacting core system",
-          "Handling high-volume concurrent data processing requests",
-          "Ensuring plugin backward compatibility",
-          "Optimizing complex business logic performance",
-          "Maintaining data processing accuracy and consistency"
+          "### Legacy System Integration\n" +
+          "- Built with outdated Qt component library\n" +
+          "- Complex and non-intuitive UI design\n" +
+          "- High learning curve for new developers\n" +
+          "- Limited documentation and tribal knowledge\n" +
+          "- Challenges in maintaining consistency with modern UI standards",
+          "### Domain Knowledge Gap\n" +
+          "- Limited understanding of manufacturing industry business processes\n" +
+          "- High communication cost with domain experts\n" +
+          "- Complex business rules and workflows\n" +
+          "- Implemented Domain-Driven Design (DDD) to:\n" +
+          "  - Bridge communication gap with ubiquitous language\n" +
+          "  - Model complex business processes\n" +
+          "  - Create bounded contexts for different business areas\n" +
+          "  - Ensure business logic consistency",
+          "### Stakeholder Alignment\n" +
+          "- Different stakeholders had varying expectations for the same features\n" +
+          "- Production managers focused on efficiency metrics\n" +
+          "- Financial team emphasized cost tracking accuracy\n" +
+          "- Warehouse staff prioritized inventory operation simplicity\n" +
+          "- Solutions implemented:\n" +
+          "  - Developed modular features to accommodate different needs\n"
         ],
         tags: ["C#", ".NET", "Enterprise", "Plugin Development"],
-        image: "/images/erp-plugins.jpg",
+        image: "/images/erp-plugins.png",
         architecture: {
           title: "System Architecture",
           description: "Illustrates the overall plugin system architecture, including integration with the ERP core system and data flow processes."

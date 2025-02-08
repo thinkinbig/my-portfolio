@@ -207,7 +207,15 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
           "Wie man Systemskalierbarkeit und Fehlertoleranz sicherstellt (Service-Auto-Skalierung)",
           "Wie man effiziente CI/CD-Pipelines aufbaut (automatisierte Tests und Bereitstellung)",
           "Wie man Container-Image-Größe und Build-Geschwindigkeit optimiert (Reduzierung der Bereitstellungszeit)",
-          "Wie man Service-Hochverfügbarkeit implementiert (30-60s Service-Auto-Recovery)"
+          "Wie man Service-Hochverfügbarkeit implementiert (30-60s Service-Auto-Recovery)",
+          "### Stakeholder-Abstimmung\n" +
+          "- Unterschiedliche Stakeholder hatten verschiedene Erwartungen an dieselben Funktionen\n" +
+          "- Produktionsleiter fokussierten sich auf Effizienzmetriken\n" +
+          "- Finanzteam betonte die Genauigkeit der Kostenverfolgung\n" +
+          "- Lagerpersonal priorisierte die Einfachheit der Bestandsoperationen\n" +
+          "- Implementierte Lösungen:\n" +
+          "  - Erstellung interaktiver Prototypen zur Funktionsabstimmung\n" +
+          "  - Entwicklung modularer Funktionen zur Erfüllung verschiedener Anforderungen\n"
         ],
         tags: ["Spring Cloud", "Angular", "Mikroservices", "Docker"],
         image: "/images/web-ide.jpg",
@@ -261,7 +269,9 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
           "Entwicklung von Datenanalyse- und Berichtserstellungsfunktionen",
           "Bereitstellung von REST-API-Schnittstellen für Drittsystemintegration",
           "Sicherstellung der Plugin-Leistung und -Stabilität",
-          "Erstellung umfassender technischer Dokumentation und Benutzerhandbücher"
+          "Erstellung umfassender technischer Dokumentation und Benutzerhandbücher",
+          "Implementierung der dynamischen Bestandsüberwachung und Alarmierung basierend auf dem Supply Chain BOM-Baum",
+          "Entwicklung eines Kostenmanagement- und Analysesystems zur Optimierung der Lieferkette"
         ],
         technologies: [
           "Backend: C# / .NET Framework",
@@ -273,14 +283,31 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
           "Dokumentation: Swagger/OpenAPI"
         ],
         challenges: [
-          "Funktionserweiterung ohne Beeinträchtigung des Kernsystems",
-          "Verarbeitung großer Mengen gleichzeitiger Datenverarbeitungsanfragen",
-          "Sicherstellung der Plugin-Abwärtskompatibilität",
-          "Optimierung der Leistung komplexer Geschäftslogik",
-          "Aufrechterhaltung der Datenverarbeitungsgenauigkeit und -konsistenz"
+          "### Integration von Legacy-Systemen\n" +
+          "- Auf veralteter Qt-Komponentenbibliothek aufgebaut\n" +
+          "- Komplexes und nicht intuitives UI-Design\n" +
+          "- Hohe Lernkurve für neue Entwickler\n" +
+          "- Begrenzte Dokumentation und implizites Wissen\n" +
+          "- Schwierigkeiten bei der Einhaltung moderner UI-Standards",
+          "### Domänenwissenslücke\n" +
+          "- Begrenztes Verständnis von Geschäftsprozessen in der Fertigungsindustrie\n" +
+          "- Hohe Kommunikationskosten mit Domänenexperten\n" +
+          "- Komplexe Geschäftsregeln und Arbeitsabläufe\n" +
+          "- Domain-Driven Design (DDD) implementiert:\n" +
+          "  - Überbrückung der Kommunikationslücke durch einheitliche Sprache\n" +
+          "  - Modellierung komplexer Geschäftsprozesse\n" +
+          "  - Erstellung von Bounded Contexts für verschiedene Geschäftsbereiche\n" +
+          "  - Sicherstellung der Geschäftslogikkonsistenz\n",
+          "### Stakeholder-Abstimmung\n" +
+          "- Unterschiedliche Stakeholder hatten verschiedene Erwartungen an dieselben Funktionen\n" +
+          "- Produktionsleiter fokussierten sich auf Effizienzmetriken\n" +
+          "- Finanzteam betonte die Genauigkeit der Kostenverfolgung\n" +
+          "- Lagerpersonal priorisierte die Einfachheit der Bestandsoperationen\n" +
+          "- Implementierte Lösungen:\n" +
+          "  - Entwicklung modularer Funktionen zur Erfüllung verschiedener Anforderungen\n"
         ],
         tags: ["C#", ".NET", "Enterprise", "Plugin-Entwicklung"],
-        image: "/images/erp-plugins.jpg",
+        image: "/images/erp-plugins.png",
         architecture: {
           title: "Systemarchitektur",
           description: "Veranschaulicht die Gesamtarchitektur des Plugin-Systems, einschließlich der Integration mit dem ERP-Kernsystem und der Datenflussprozesse."
