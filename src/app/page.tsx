@@ -5,7 +5,6 @@ import { getI18nText } from "@/i18n";
 import { Header } from "@/components/layout/Header";
 import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
-import Image from "next/image";
 import Link from "next/link";
 import { Contact } from "@/components/sections/Contact";
 import { Education } from "@/components/sections/Education";
