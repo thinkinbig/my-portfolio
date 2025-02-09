@@ -8,6 +8,7 @@ import { Projects } from "@/components/sections/Projects";
 import Image from "next/image";
 import Link from "next/link";
 import { Contact } from "@/components/sections/Contact";
+import { Education } from "@/components/sections/Education";
 
 export default function Home() {
   const { language } = useLanguage();
@@ -70,18 +71,10 @@ export default function Home() {
         {/* Projects Section */}
         <Projects />
 
-        {/* Experience Section */}
-        <section className="bg-foreground/5 py-20">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-center">
-              {getI18nText(language, 'sections.experience')}
-            </h2>
-            <div className="space-y-8">
-              {/* 这里将放置工作经历时间线 */}
-            </div>
-          </div>
-        </section>
+        {/* Education Section */}
+        <Education />
 
+        {/* Contact Section */}
         <Contact />
       </div>
     </div>

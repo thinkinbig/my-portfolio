@@ -12,8 +12,29 @@ export const en = {
   sections: {
     skills: "Skills",
     projects: "Projects",
-    experience: "Internships",
+    experience: "Education",
     contact: "Contact",
+  },
+  education: {
+    title: "Education",
+    tum: {
+      school: "Technical University of Munich",
+      degree: "Master of Science in Computer Science",
+      time: "2024 - Present",
+      courses: [
+        "Distributed Systems",
+        "Cloud Computing",
+        "System Programming",
+        "Machine Learning",
+        "Software Engineering"
+      ]
+    },
+    kit: {
+      school: "Karlsruhe Institute of Technology",
+      degree: "Bachelor of Science in Computer Science",
+      time: "2019 - 2024",
+      location: "Karlsruhe, Germany"
+    }
   },
   skills: {
     distribution: 'Skills Distribution',
@@ -304,6 +325,45 @@ All services run in Docker containers and are automatically deployed to Google C
           title: "System Architecture",
           description: "Illustrates the overall plugin system architecture, including integration with the ERP core system and data flow processes."
         },
+      },
+      {
+        id: "rag-system",
+        title: "RAG System for Educational Content",
+        description: "Developed a RAG system using Llama2 at KIT Institute for Anthropomatics and Robotics, focusing on enhancing lecture material accessibility.",
+        introduction: "As a research student at IAR-KIT, implemented a retrieval-augmented generation system to make lecture content more interactive. The system processes lecture slides and course materials to provide accurate, context-aware responses to student queries.",
+        requirements: [
+          "Process and vectorize KIT lecture slides and materials",
+          "Implement efficient retrieval system for educational content",
+          "Fine-tune Llama2 for academic context",
+          "Create evaluation metrics for answer quality",
+          "Design user-friendly Q&A interface",
+          "Support multiple question types and formats"
+        ],
+        technologies: [
+          "Llama2 for text generation",
+          "FAISS for vector storage",
+          "Sentence-transformers for embeddings",
+          "Python FastAPI backend",
+          "Streamlit for demo interface",
+          "Hugging Face transformers",
+          "PyTorch for model handling"
+        ],
+        challenges: [
+          "### Academic Content Processing\n" +
+          "- Developed specialized tokenization for technical content\n" +
+          "- Handled mathematical formulas and diagrams\n" +
+          "- Maintained context across lecture sections",
+          "### Model Optimization\n" +
+          "- Fine-tuned Llama2 for academic domain\n" +
+          "- Balanced response accuracy and generation speed\n" +
+          "- Implemented efficient context window management",
+          "### Educational Accuracy\n" +
+          "- Ensured responses align with course material\n" +
+          "- Developed verification against source slides\n" +
+          "- Created academic-focused evaluation metrics"
+        ],
+        tags: ["RAG", "Llama2", "NLP", "Research"],
+        image: "/images/rag-system.png"
       }
     ]
   },

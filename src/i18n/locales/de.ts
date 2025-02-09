@@ -12,8 +12,29 @@ export const de = {
   sections: {
     skills: "Fähigkeiten",
     projects: "Projekte",
-    experience: "Praktika",
+    experience: "Ausbildung",
     contact: "Kontakt",
+  },
+  education: {
+    title: "Ausbildung",
+    tum: {
+      school: "Technische Universität München",
+      degree: "Master of Science in Informatik",
+      time: "2024 - Heute",
+      courses: [
+        "Verteilte Systeme",
+        "Cloud Computing",
+        "Systemprogrammierung",
+        "Maschinelles Lernen",
+        "Software Engineering"
+      ]
+    },
+    kit: {
+      school: "Karlsruher Institut für Technologie",
+      degree: "Bachelor of Science in Informatik",
+      time: "2019 - 2024",
+      location: "Karlsruhe, Deutschland"
+    }
   },
   skills: {
     distribution: 'Fähigkeitsverteilung',
@@ -304,6 +325,45 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
           title: "Systemarchitektur",
           description: "Veranschaulicht die Gesamtarchitektur des Plugin-Systems, einschließlich der Integration mit dem ERP-Kernsystem und der Datenflussprozesse."
         },
+      },
+      {
+        id: "rag-system",
+        title: "Enterprise RAG-System",
+        description: "Entwicklung eines Retrieval-Augmented Generation Systems für die Unternehmenswissensbasis zur Verbesserung der Informationsabrufgenauigkeit und Reduzierung von Halluzinationen.",
+        introduction: "Entwicklung eines RAG-Systems, das den Abruf von Unternehmensdokumenten mit LLM-Fähigkeiten kombiniert. Das System verarbeitet interne Dokumente, Forschungsarbeiten und technische Spezifikationen, um genaue und kontextbezogene Antworten zu liefern.",
+        requirements: [
+          "Aufbau einer effizienten Vektorspeicherung für Dokumenteinbettungen",
+          "Implementierung semantischer Suche mit Kosinus-Ähnlichkeit",
+          "Entwicklung eines Prompt-Engineering-Systems für Kontexteinbindung",
+          "Erstellung von Bewertungsmetriken für die Antwortqualität",
+          "Unterstützung mehrerer Dokumentformate (PDF, Word, Markdown)",
+          "Implementierung der Echtzeit-Dokumentsynchronisation"
+        ],
+        technologies: [
+          "LangChain / LlamaIndex für RAG-Pipeline",
+          "Faiss / Milvus für Vektorspeicherung",
+          "OpenAI Embeddings für Dokumentvektorisierung",
+          "Python FastAPI Backend",
+          "Elasticsearch für Metadatensuche",
+          "Docker für Containerisierung",
+          "MLflow für Experimentverfolgung"
+        ],
+        challenges: [
+          "### Abrufqualität\n" +
+          "- Optimierung von Chunk-Größe und Überlappung für bessere Kontexterfassung\n" +
+          "- Implementierung hybrider Suche mit semantischem und Schlüsselwort-Matching\n" +
+          "- Entwicklung eines benutzerdefinierten Relevanz-Scoring-Algorithmus",
+          "### Antwortgenauigkeit\n" +
+          "- Entwicklung von Prompt-Templates zur Reduzierung von Halluzinationen\n" +
+          "- Implementierung von Faktenprüfung gegen Quelldokumente\n" +
+          "- Erstellung einer Evaluierungspipeline für Antwortqualität",
+          "### Systemleistung\n" +
+          "- Optimierung der Vektorsuche für große Dokumentenbestände\n" +
+          "- Implementierung von Caching und Batch-Verarbeitung\n" +
+          "- Entwicklung eines effizienten Dokumentaktualisierungsmechanismus"
+        ],
+        tags: ["RAG", "LLM", "Vektor-DB", "ML/KI"],
+        image: "/images/rag-system.png"
       }
     ]
   },

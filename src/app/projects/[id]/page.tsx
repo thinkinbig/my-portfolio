@@ -5,6 +5,7 @@ import WebIDEProject from '../web-ide/page';
 import NotFound from '@/app/not-found';
 import TUMSysProg from '../tum-sysprog/page';
 import ERPPlugins from '../erp-plugins/page';
+import RAGSystem from '../rag-system/page';
 
 export default function ProjectPage() {
   const { id } = useParams();
@@ -16,6 +17,8 @@ export default function ProjectPage() {
       return <TUMSysProg />;
     case 'erp-plugins':
       return <ERPPlugins />;
+    case 'rag-system':
+      return <RAGSystem />;
     default:
       return <NotFound />;
   }

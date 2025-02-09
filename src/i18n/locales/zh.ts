@@ -12,8 +12,29 @@ export const zh = {
   sections: {
     skills: "技术栈",
     projects: "项目经历",
-    experience: "实习经历",
+    experience: "教育经历",
     contact: "联系方式",
+  },
+  education: {
+    title: "教育经历",
+    tum: {
+      school: "慕尼黑工业大学",
+      degree: "计算机科学硕士",
+      time: "2024 - 至今",
+      courses: [
+        "分布式系统",
+        "云计算",
+        "系统编程",
+        "机器学习",
+        "软件工程"
+      ]
+    },
+    kit: {
+      school: "卡尔斯鲁厄理工学院",
+      degree: "计算机科学学士",
+      time: "2019 - 2024",
+      location: "卡尔斯鲁厄, 德国"
+    }
   },
   projects: {
     title: "项目经历",
@@ -228,6 +249,45 @@ export const zh = {
           title: "系统架构图",
           description: "展示了插件系统的整体架构，包括与 ERP 核心系统的集成方式，以及数据流转过程。",
         },
+      },
+      {
+        id: "rag-system",
+        title: "教育内容 RAG 系统",
+        description: "在 KIT 人类学与机器人研究所开发基于 Llama2 的 RAG 系统，致力于提高课程材料的可访问性。",
+        introduction: "作为 IAR-KIT 的研究助理，实现了一个检索增强生成系统，使课程内容更具交互性。该系统处理讲义和课程材料，为学生提供准确、上下文感知的问答服务。",
+        requirements: [
+          "处理和向量化 KIT 讲义和教材",
+          "实现教育内容的高效检索系统",
+          "针对学术场景微调 Llama2",
+          "创建答案质量评估指标",
+          "设计用户友好的问答界面",
+          "支持多种问题类型和格式"
+        ],
+        technologies: [
+          "Llama2 用于文本生成",
+          "FAISS 用于向量存储",
+          "Sentence-transformers 用于嵌入",
+          "Python FastAPI 后端",
+          "Streamlit 用于演示界面",
+          "Hugging Face transformers",
+          "PyTorch 用于模型处理"
+        ],
+        challenges: [
+          "### 学术内容处理\n" +
+          "- 开发针对技术内容的专门分词\n" +
+          "- 处理数学公式和图表\n" +
+          "- 维护跨讲座章节的上下文",
+          "### 模型优化\n" +
+          "- 针对学术领域微调 Llama2\n" +
+          "- 平衡响应准确性和生成速度\n" +
+          "- 实现高效的上下文窗口管理",
+          "### 教育准确性\n" +
+          "- 确保响应与课程材料一致\n" +
+          "- 开发基于源讲义的验证\n" +
+          "- 创建面向学术的评估指标"
+        ],
+        tags: ["RAG", "Llama2", "NLP", "研究"],
+        image: "/images/rag-system.png"
       }
     ]
   },
