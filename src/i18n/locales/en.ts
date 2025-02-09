@@ -1,10 +1,11 @@
 export const en = {
   header: {
     name: "Zeyu Li",
+    title: "Portfolio"
   },
   hero: {
     title: "Zeyu Li",
-    role: "Computer Science Student / Backend Developer Intern",
+    role: "Computer Science Student / Backend Developer",
     introduction: "Currently studying distributed systems and cloud-native technologies. Gained hands-on experience with Java and Golang through academic projects and internships. Passionate about high-performance computing and microservices architecture. Eager to apply theoretical knowledge in practical projects.",
     viewProjects: "View Projects",
     contactMe: "Contact Me"

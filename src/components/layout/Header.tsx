@@ -5,7 +5,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getI18nText } from '@/i18n';
 import type { Language } from '@/i18n';
-import Image from 'next/image';
+import Link from 'next/link';
+import { Logo } from '@/components/icons/Logo';
 
 const languages: Record<Language, string> = {
   en: 'English',
@@ -21,18 +22,17 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-b border-foreground/10 z-50">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/crystal.svg"
-            alt="Logo"
-            width={24}
-            height={24}
-            className="dark:invert"
-          />
-          <span className="text-lg font-semibold">
-            {getI18nText(language, 'header.name')}
-          </span>
-        </div>
+        <Link href="/" className="flex items-center gap-2">
+          <Logo variant="header" />
+          <div>
+            <div className="font-semibold">
+              {getI18nText(language, 'header.name')}
+            </div>
+            <div className="text-xs text-secondary">
+              {getI18nText(language, 'header.title')}
+            </div>
+          </div>
+        </Link>
         
         <div className="flex items-center gap-4">
           {/* Theme Toggle Button */}

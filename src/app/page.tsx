@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Contact } from "@/components/sections/Contact";
 import { Education } from "@/components/sections/Education";
+import { Logo } from '@/components/icons/Logo';
 
 export default function Home() {
   const { language } = useLanguage();
@@ -52,13 +53,7 @@ export default function Home() {
             </div>
             <div className="lg:w-1/2 flex justify-center">
               <div className="relative w-64 h-64 lg:w-96 lg:h-96">
-                <Image
-                  src="/crystal.svg"
-                  alt="Crystal Logo"
-                  fill
-                  className="dark:invert animate-float"
-                  priority
-                />
+                <Logo variant="hero" />
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent blur-3xl -z-10" />
               </div>
             </div>
