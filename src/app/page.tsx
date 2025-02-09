@@ -7,6 +7,7 @@ import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
 import Image from "next/image";
 import Link from "next/link";
+import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
   const { language } = useLanguage();
@@ -81,15 +82,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section className="container mx-auto px-4 py-20">
-          <h2 className="text-3xl font-bold mb-12 text-center">
-            {getI18nText(language, 'sections.contact')}
-          </h2>
-          <div className="flex justify-center space-x-8">
-            {/* 这里将放置社交媒体链接和联系方式 */}
-          </div>
-        </section>
+        <Contact />
       </div>
     </div>
   );

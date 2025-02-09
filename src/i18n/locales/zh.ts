@@ -122,47 +122,14 @@ export const zh = {
 - **会话**: Redis`
         ],
         challenges: [
-          `### 性能优化
-- 编译请求响应时间优化至 200-500ms
-- 使用 Redis 缓存编译结果
-- 实现请求队列和限流`,
-
-          `### 安全加固
-- 代码执行沙箱环境
-- 恶意代码检测
-- 资源使用限制`,
-
-          `### 高并发处理
-- API 网关性能优化
-- 服务自动扩缩容
-- 限流和降级策略`,
-
-          `### 用户体验
-- 编辑器自动保存
-- 代码语法高亮
-- 编译错误提示`,
-
-          `### 可扩展性
-- 微服务自动发现
-- 容器编排管理
-- 多实例部署`,
-
-          `### 自动化部署
-- CI/CD 流水线
-- 自动化测试
-- 蓝绿部署`,
-
-          `### 资源优化
-- 容器镜像精简
-- 构建速度优化
-- 资源限额管理`,
-
-          `### 高可用性
-- 30-60秒故障恢复
-- 服务健康检查
-- 自动故障转移`,
-
-
+          "如何高效处理多用户并发编译请求（优化至 200-500ms 响应时间）",
+          "如何保证代码执行安全性（防止恶意代码执行）",
+          "如何优化 API 网关性能（处理高并发请求）",
+          "如何提升 Web IDE 用户体验（流畅的代码编辑和错误反馈）",
+          "如何保证系统可扩展性和容错性（服务自动扩缩容）",
+          "如何搭建高效的 CI/CD 流水线（自动化测试和部署）",
+          "如何优化容器镜像大小和构建速度（减少部署时间）",
+          "如何实现服务高可用（30-60秒故障恢复）"
         ],
         tags: ["Spring Cloud", "Angular", "微服务", "Docker"],
         image: "/images/web-ide.jpg",
@@ -396,6 +363,25 @@ export const zh = {
           description: "了解 Prompt 工程和微调技术，使用 LangChain 构建过 RAG 系统，熟悉大语言模型应用开发"
         }
       ]
+    }
+  },
+  contact: {
+    title: "联系方式",
+    email: {
+      label: "邮箱",
+      value: "[lizeyu1101@gmail.com](mailto:lizeyu1101@gmail.com)"
+    },
+    github: {
+      label: "GitHub",
+      value: "[https://github.com/thinkinbig](https://github.com/thinkinbig)"
+    },
+    linkedin: {
+      label: "领英",
+      value: "[https://www.linkedin.com/in/zeyu-li-44242930a/](https://www.linkedin.com/in/zeyu-li-44242930a/)"
+    },
+    location: {
+      label: "所在地",
+      value: "[慕尼黑, 德国](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
     }
   }
 }; 

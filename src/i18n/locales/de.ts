@@ -207,15 +207,7 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
           "Wie man Systemskalierbarkeit und Fehlertoleranz sicherstellt (Service-Auto-Skalierung)",
           "Wie man effiziente CI/CD-Pipelines aufbaut (automatisierte Tests und Bereitstellung)",
           "Wie man Container-Image-Größe und Build-Geschwindigkeit optimiert (Reduzierung der Bereitstellungszeit)",
-          "Wie man Service-Hochverfügbarkeit implementiert (30-60s Service-Auto-Recovery)",
-          "### Stakeholder-Abstimmung\n" +
-          "- Unterschiedliche Stakeholder hatten verschiedene Erwartungen an dieselben Funktionen\n" +
-          "- Produktionsleiter fokussierten sich auf Effizienzmetriken\n" +
-          "- Finanzteam betonte die Genauigkeit der Kostenverfolgung\n" +
-          "- Lagerpersonal priorisierte die Einfachheit der Bestandsoperationen\n" +
-          "- Implementierte Lösungen:\n" +
-          "  - Erstellung interaktiver Prototypen zur Funktionsabstimmung\n" +
-          "  - Entwicklung modularer Funktionen zur Erfüllung verschiedener Anforderungen\n"
+          "Wie man Service-Hochverfügbarkeit implementiert (30-60s Service-Auto-Recovery)"
         ],
         tags: ["Spring Cloud", "Angular", "Mikroservices", "Docker"],
         image: "/images/web-ide.jpg",
@@ -314,5 +306,24 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
         },
       }
     ]
+  },
+  contact: {
+    title: "Kontakt",
+    email: {
+      label: "E-Mail",
+      value: "[lizeyu1101@gmail.com](mailto:lizeyu1101@gmail.com)"
+    },
+    github: {
+      label: "GitHub",
+      value: "[github.com/thinkinbig](https://github.com/thinkinbig)"
+    },
+    linkedin: {
+      label: "LinkedIn",
+      value: "[https://www.linkedin.com/in/zeyu-li-44242930a/](https://www.linkedin.com/in/zeyu-li-44242930a/)"
+    },
+    location: {
+      label: "Standort",
+      value: "[慕尼黑, 德国](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
+    }
   }
 }; 

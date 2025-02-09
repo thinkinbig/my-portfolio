@@ -207,17 +207,7 @@ All services run in Docker containers and are automatically deployed to Google C
           "How to ensure system scalability and fault tolerance (service auto-scaling)",
           "How to build efficient CI/CD pipelines (automated testing and deployment)",
           "How to optimize container image size and build speed (reducing deployment time)",
-          "How to implement service high availability (30-60s service auto-recovery)",
-          "### Stakeholder Alignment\n" +
-          "- Different stakeholders had varying expectations for the same features\n" +
-          "- Production managers focused on efficiency metrics\n" +
-          "- Financial team emphasized cost tracking accuracy\n" +
-          "- Warehouse staff prioritized inventory operation simplicity\n" +
-          "- Solutions implemented:\n" +
-          "  - Created interactive prototypes for feature alignment\n" +
-          "  - Conducted regular cross-department workshops\n" +
-          "  - Developed modular features to accommodate different needs\n" +
-          "  - Established clear feature prioritization process"
+          "How to implement service high availability (30-60s service auto-recovery)"
         ],
         tags: ["Spring Cloud", "Angular", "Microservices", "Docker"],
         image: "/images/web-ide.jpg",
@@ -316,5 +306,24 @@ All services run in Docker containers and are automatically deployed to Google C
         },
       }
     ]
+  },
+  contact: {
+    title: "Contact Me",
+    email: {
+      label: "Email",
+      value: "[lizeyu1101@gmail.com](mailto:lizeyu1101@gmail.com)"
+    },
+    github: {
+      label: "GitHub",
+      value: "[github.com/thinkinbig](https://github.com/thinkinbig)"
+    },
+    linkedin: {
+      label: "LinkedIn",
+      value: "[linkedin.com/in/zeyu-li-44242930a/](https://www.linkedin.com/in/zeyu-li-44242930a/)"
+    },
+    location: {
+      label: "Location",
+      value: "[Munich, Germany](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
+    }
   }
 }; 
