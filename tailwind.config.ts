@@ -51,4 +51,25 @@ export default {
     },
   },
   plugins: [],
+  corePlugins: {
+    preflight: true,
+  },
+  layer: {
+    components: {
+      '.layout-container': 'container mx-auto px-4',
+      '.layout-section': 'py-20',
+      '.card': 'bg-foreground/5 rounded-xl p-6 border border-foreground/10',
+      '.card-hover': 'hover:bg-foreground/10 transition-colors',
+      '.btn': 'px-6 py-3 rounded-xl transition-colors text-base font-medium',
+      '.btn-primary': 'bg-primary text-white hover:bg-primary/90',
+      '.btn-disabled': 'bg-foreground/10 text-foreground/50',
+      '.input': 'w-full px-6 py-3 rounded-xl bg-foreground/5 border border-foreground/10 focus:outline-none focus:border-primary/30',
+      '.icon-container': 'w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary',
+      '.icon-sm': 'w-8 h-8',
+      '.title': 'text-3xl font-bold mb-12',
+      '.subtitle': 'text-xl font-semibold text-primary mb-4',
+      '.list-item': 'flex items-start gap-2',
+      '.list-dot': 'w-1.5 h-1.5 rounded-full bg-primary/60 mt-2.5 flex-shrink-0',
+    }
+  }
 } satisfies Config;

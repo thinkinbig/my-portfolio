@@ -16,7 +16,7 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-b border-foreground/10 z-50">
-      <div className="container mx-auto px-4 h-full flex items-center justify-between">
+      <div className="layout-container h-full flex items-center justify-between">
         <div className="text-lg font-semibold">
           Zeyu Li
         </div>
@@ -24,7 +24,7 @@ export function Header() {
         <div className="relative">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-foreground/5 transition-colors"
+            className="btn card-hover flex items-center gap-2"
           >
             <span>{languages[language]}</span>
             <svg
@@ -43,7 +43,7 @@ export function Header() {
           </button>
 
           {isOpen && (
-            <div className="absolute top-full right-0 mt-1 py-1 w-32 bg-background rounded-md shadow-lg border border-foreground/10">
+            <div className="card absolute top-full right-0 mt-1 py-1 w-32">
               {Object.entries(languages).map(([code, name]) => (
                 <button
                   key={code}
@@ -51,7 +51,7 @@ export function Header() {
                     setLanguage(code as Language);
                     setIsOpen(false);
                   }}
-                  className={`w-full px-4 py-2 text-left hover:bg-foreground/5 transition-colors ${
+                  className={`w-full px-4 py-2 text-left card-hover ${
                     language === code ? 'text-primary' : ''
                   }`}
                 >
