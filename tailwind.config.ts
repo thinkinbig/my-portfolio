@@ -20,6 +20,7 @@ export default {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'slide-in-right': 'slideInRight 0.5s ease-out',
         'scale-in': 'scaleIn 0.5s ease-out',
+        'cursor': 'cursor 1s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -41,6 +42,10 @@ export default {
         scaleIn: {
           '0%': { transform: 'scale(0.9)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        cursor: {
+          '0%, 100%': { opacity: '0' },
+          '50%': { opacity: '1' },
         },
       },
     },
