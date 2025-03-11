@@ -386,5 +386,10 @@ All services run in Docker containers and are automatically deployed to Google C
       label: "Location",
       value: "[Munich, Germany](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
     }
+  },
+  notFound: {
+    title: "Page Not Found",
+    description: "The page you're looking for doesn't exist or has been moved.",
+    backHome: "Back to Home"
   }
-}; 
+} as const; 

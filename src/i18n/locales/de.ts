@@ -384,7 +384,12 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
     },
     location: {
       label: "Standort",
-      value: "[慕尼黑, 德国](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
+      value: "[München, Deutschland](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
     }
+  },
+  notFound: {
+    title: "Seite nicht gefunden",
+    description: "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    backHome: "Zurück zur Startseite"
   }
-}; 
+} as const; 

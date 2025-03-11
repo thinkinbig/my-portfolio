@@ -1,30 +1,14 @@
 'use client';
 
-import { useLanguage } from "@/contexts/LanguageContext";
+import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { i18n } from '@/i18n';
 import { Header } from "@/components/layout/Header";
-import Link from "next/link";
 import Image from "next/image";
 
 export default function NotFound() {
   const { language } = useLanguage();
-
-  const content = {
-    en: {
-      title: "Page Not Found",
-      description: "The page you're looking for doesn't exist or has been moved.",
-      backHome: "Back to Home"
-    },
-    zh: {
-      title: "页面未找到",
-      description: "您访问的页面不存在或已被移动。",
-      backHome: "返回首页"
-    },
-    de: {
-      title: "Seite nicht gefunden",
-      description: "Die gesuchte Seite existiert nicht oder wurde verschoben.",
-      backHome: "Zurück zur Startseite"
-    }
-  };
+  const content = i18n[language].notFound;
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,10 +29,10 @@ export default function NotFound() {
             404
           </h1>
           <h2 className="text-2xl font-semibold mb-4">
-            {content[language].title}
+            {content.title}
           </h2>
           <p className="text-secondary mb-8">
-            {content[language].description}
+            {content.description}
           </p>
           
           <Link 
@@ -70,7 +54,7 @@ export default function NotFound() {
                 d="M15 19l-7-7 7-7" 
               />
             </svg>
-            {content[language].backHome}
+            {content.backHome}
           </Link>
         </div>
       </main>

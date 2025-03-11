@@ -444,5 +444,10 @@ export const zh = {
       label: "所在地",
       value: "[慕尼黑, 德国](https://www.google.com/maps/place/M%C3%BCnchen,+Germany)"
     }
+  },
+  notFound: {
+    title: "页面未找到",
+    description: "您访问的页面不存在或已被移动。",
+    backHome: "返回首页"
   }
-}; 
+} as const; 
