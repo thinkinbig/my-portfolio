@@ -60,7 +60,7 @@ export function WebIDEPreview() {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-lg shadow-2xl">
+    <div className="w-full bg-gradient-to-br from-gray-900 to-gray-800 p-2 sm:p-6 rounded-lg shadow-2xl">
       {/* Header Bar */}
       <div className="flex items-center justify-between mb-4 px-4 py-2 bg-gray-800 rounded-t-lg border-b border-gray-700">
         <div className="flex items-center space-x-2">
@@ -71,9 +71,9 @@ export function WebIDEPreview() {
         <div className="text-gray-400 text-sm">Main.java</div>
       </div>
 
-      <div className="flex h-[400px]">
+      <div className="flex flex-col sm:flex-row h-auto sm:h-[400px]">
         {/* Sidebar */}
-        <div className="w-48 bg-gray-800 border-r border-gray-700 p-2">
+        <div className="w-full sm:w-48 bg-gray-800 border-b sm:border-b-0 sm:border-r border-gray-700 p-2">
           <div className="flex items-center text-gray-400 text-sm mb-2 p-2 hover:bg-gray-700 rounded cursor-pointer">
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
@@ -88,7 +88,7 @@ export function WebIDEPreview() {
         </div>
 
         {/* Editor */}
-        <div className="flex-1 bg-gray-900 p-4 relative group">
+        <div className="flex-1 bg-gray-900 p-4 relative group min-h-[200px] sm:min-h-0">
           <SyntaxHighlighter
             language="java"
             style={vscDarkPlus}
@@ -122,7 +122,7 @@ export function WebIDEPreview() {
         </div>
 
         {/* Terminal */}
-        <div className="w-full max-w-md bg-black p-2 border-l border-gray-700">
+        <div className="w-full sm:max-w-md bg-black p-2 border-t sm:border-t-0 sm:border-l border-gray-700 min-h-[150px] sm:min-h-0">
           <div className="flex justify-between items-center mb-2 text-gray-400 text-sm">
             <span>Terminal</span>
             <button 
