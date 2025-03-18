@@ -14,25 +14,32 @@ export const VisualizationPreview = memo(function VisualizationPreview({
   visualizationRef
 }: VisualizationPreviewProps) {
   return (
-    <div className="w-full sm:w-1/2 bg-white p-4 rounded-lg">
-      <div className="text-gray-800 font-medium mb-2">预览</div>
-      {error && (
-        <div className="text-red-500 text-sm mb-2 p-2 bg-red-100 rounded">
-          {error}
-        </div>
-      )}
-      <div className="relative w-full h-full">
-        {isLoading && (
-          <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
+    <div className="flex-1 bg-gray-900 p-4 rounded-lg relative min-h-[400px] max-h-[800px] overflow-auto">
+      {/* 预览区域 - 自适应大小 */}
+      <div className="w-full h-full flex items-center justify-center">
         <div 
-          id="visualization" 
-          ref={visualizationRef}
-          className="w-full h-full flex items-center justify-center"
+          ref={visualizationRef} 
+          className="bg-white rounded-lg shadow-lg overflow-hidden w-full h-full p-6"
         />
       </div>
+      
+      {/* 加载状态 */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      
+      {/* 错误提示 */}
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 max-w-md">
+            <div className="text-red-500 font-mono text-sm whitespace-pre-wrap">
+              {error}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }); 

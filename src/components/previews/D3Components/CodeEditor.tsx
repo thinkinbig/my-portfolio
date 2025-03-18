@@ -16,37 +16,23 @@ export const CodeEditor = memo(function CodeEditor({
   const [code, setCode] = useState<string>(codeExamples.barChart.code);
   const [selectedExample, setSelectedExample] = useState<keyof typeof codeExamples>('barChart');
 
-  const handleRun = useCallback(() => {
-    onVisualize(code);
-  }, [code, onVisualize]);
-
   const handleEditorChange = useCallback((value: string | undefined) => {
     if (value !== undefined) {
       setCode(value);
+      onVisualize(value);
     }
-  }, []);
+  }, [onVisualize]);
 
   const handleExampleChange = useCallback((example: keyof typeof codeExamples) => {
     setSelectedExample(example);
     setCode(codeExamples[example].code);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault();
-        handleRun();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleRun]);
+    onVisualize(codeExamples[example].code);
+  }, [onVisualize]);
 
   useEffect(() => {
     // 初始化时运行一次
-    handleRun();
-  }, [handleRun]);
+    onVisualize(code);
+  }, []);
 
   return (
     <div className="flex-1 flex flex-col bg-gray-900 p-4 relative group min-h-[300px] sm:min-h-0 rounded-lg">
@@ -60,14 +46,6 @@ export const CodeEditor = memo(function CodeEditor({
             <option key={key} value={key}>{name}</option>
           ))}
         </select>
-        <button 
-          onClick={handleRun}
-          disabled={isLoading}
-          className={`px-3 py-1 bg-primary/20 hover:bg-primary/30 text-primary rounded text-sm transition-colors
-            ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {isLoading ? '运行中...' : 'Run ▶'}
-        </button>
       </div>
       <Editor
         height="100%"
@@ -82,7 +60,7 @@ export const CodeEditor = memo(function CodeEditor({
           roundedSelection: false,
           scrollBeyondLastLine: false,
           readOnly: isLoading,
-          automaticLayout: true,
+          automaticLayout: true
         }}
       />
     </div>

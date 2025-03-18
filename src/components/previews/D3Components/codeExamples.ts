@@ -20,11 +20,8 @@ const width = 400;
 const height = 300;
 const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 
-// 清除旧的内容
-d3.select("#visualization").selectAll("*").remove();
-
 // 创建 SVG
-const svg = d3.select("#visualization")
+const svg = d3.select(container)
   .append("svg")
   .attr("width", width)
   .attr("height", height);
@@ -76,10 +73,10 @@ const height = 300;
 const radius = Math.min(width, height) / 2;
 
 // 清除旧的内容
-d3.select("#visualization").selectAll("*").remove();
+d3.select(container).selectAll("*").remove();
 
 // 创建 SVG
-const svg = d3.select("#visualization")
+const svg = d3.select(container)
   .append("svg")
   .attr("width", width)
   .attr("height", height)
@@ -140,10 +137,10 @@ const height = 300;
 const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 
 // 清除旧的内容
-d3.select("#visualization").selectAll("*").remove();
+d3.select(container).selectAll("*").remove();
 
 // 创建 SVG
-const svg = d3.select("#visualization")
+const svg = d3.select(container)
   .append("svg")
   .attr("width", width)
   .attr("height", height);
