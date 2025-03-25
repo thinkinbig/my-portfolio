@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import type { Configuration as WebpackConfig } from "webpack";
 
 const nextConfig: NextConfig = {
+
   webpack(config: WebpackConfig, { dev, isServer }) {
     // 只在开发环境和客户端启用 wdyr
     if (dev && !isServer) {
@@ -21,9 +22,6 @@ const nextConfig: NextConfig = {
 
     return config;
   },
-  // 其他配置项...
-  reactStrictMode: true,
-  poweredByHeader: false,
 };
 
 export default nextConfig;
