@@ -1,7 +1,11 @@
 export const de = {
   header: {
     name: "Zeyu Li",
-    title: "Portfolio"
+    title: "Portfolio",
+    navigation: {
+      visualizations: "Datenvisualisierung",
+      blog: "Blog"
+    }
   },
   hero: {
     title: "Zeyu Li",
@@ -391,5 +395,24 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
     title: "Seite nicht gefunden",
     description: "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     backHome: "Zurück zur Startseite"
+  },
+  visualizations: {
+    title: "Datenvisualisierung",
+    d3: {
+      title: "D3.js Visualisierung",
+      description: "Interaktive Datenvisualisierungen mit D3.js",
+      viewDetails: "Details anzeigen"
+    },
+    helloworld: {
+      title: "Hello World Visualisierung",
+      description: "Ein einfaches Hello World Visualisierungsbeispiel, das grundlegende Datenvisualisierungskonzepte zeigt",
+      viewDetails: "Details anzeigen",
+      content: {
+        clickMe: "Klick mich",
+        animating: "Animiert...",
+        clicks: "Klicks: ",
+        title: "SVG Interaktions-Demo"
+      }
+    }
   }
 } as const; 

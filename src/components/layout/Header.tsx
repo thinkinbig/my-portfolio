@@ -35,6 +35,24 @@ export function Header() {
         </Link>
         
         <div className="flex items-center gap-4">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-4">
+            <Link 
+              href="/visualizations"
+              className="px-4 py-2 rounded-md hover:bg-foreground/5 transition-colors"
+            >
+              {getI18nText(language, 'header.navigation.visualizations')}
+            </Link>
+            <a
+              href="https://notion-next-nine-iota-64.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-md hover:bg-foreground/5 transition-colors"
+            >
+              {getI18nText(language, 'header.navigation.blog')}
+            </a>
+          </nav>
+
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}

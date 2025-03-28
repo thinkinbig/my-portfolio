@@ -1,7 +1,11 @@
 export const en = {
   header: {
     name: "Zeyu Li",
-    title: "Portfolio"
+    title: "Portfolio",
+    navigation: {
+      visualizations: "Data Visualization",
+      blog: "Blog"
+    }
   },
   hero: {
     title: "Zeyu Li",
@@ -391,5 +395,24 @@ All services run in Docker containers and are automatically deployed to Google C
     title: "Page Not Found",
     description: "The page you're looking for doesn't exist or has been moved.",
     backHome: "Back to Home"
+  },
+  visualizations: {
+    title: "Data Visualizations",
+    d3: {
+      title: "D3.js Visualizations",
+      description: "Interactive data visualizations created with D3.js",
+      viewDetails: "View Details"
+    },
+    helloworld: {
+      title: "Hello World Visualization",
+      description: "A simple Hello World visualization example showcasing basic data visualization concepts",
+      viewDetails: "View Details",
+      content: {
+        clickMe: "Click me",
+        animating: "Animating...",
+        clicks: "Clicks: ",
+        title: "SVG Interaction Demo"
+      }
+    }
   }
 } as const; 

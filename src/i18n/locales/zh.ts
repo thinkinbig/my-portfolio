@@ -1,7 +1,11 @@
 export const zh = {
   header: {
     name: "李泽宇",
-    title: "个人简历"
+    title: "个人简历",
+    navigation: {
+      visualizations: "数据可视化",
+      blog: "博客"
+    }
   },
   hero: {
     title: "李泽宇",
@@ -449,5 +453,24 @@ export const zh = {
     title: "页面未找到",
     description: "您访问的页面不存在或已被移动。",
     backHome: "返回首页"
+  },
+  visualizations: {
+    title: "数据可视化",
+    d3: {
+      title: "D3.js 可视化",
+      description: "使用 D3.js 创建的交互式数据可视化展示",
+      viewDetails: "查看详情"
+    },
+    helloworld: {
+      title: "Hello World 可视化",
+      description: "一个简单的 Hello World 可视化示例，展示基本的数据可视化概念",
+      viewDetails: "查看详情",
+      content: {
+        clickMe: "点击我",
+        animating: "动画中...",
+        clicks: "点击次数: ",
+        title: "SVG 交互示例"
+      }
+    }
   }
 } as const; 
