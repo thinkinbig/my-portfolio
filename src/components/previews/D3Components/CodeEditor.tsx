@@ -32,7 +32,7 @@ export const CodeEditor = memo(function CodeEditor({
   useEffect(() => {
     // 初始化时运行一次
     onVisualize(code);
-  }, []);
+  }, [code, onVisualize]);
 
   return (
     <div className="flex-1 flex flex-col bg-gray-900 p-4 relative group min-h-[300px] sm:min-h-0 rounded-lg">

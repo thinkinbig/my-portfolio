@@ -30,7 +30,6 @@ export default function HelloWorldPage() {
     // 设置 SVG 尺寸
     const width = 800;
     const height = 400;
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 
     // 创建 SVG
     const svg = d3.select(svgRef.current)
@@ -96,8 +95,9 @@ export default function HelloWorldPage() {
     // 添加交互效果
     circle.on('click', function() {
       // 清除之前的动画
-      if (animationRef.current) {
-        window.cancelAnimationFrame(animationRef.current);
+      const currentAnimation = animationRef.current;
+      if (currentAnimation) {
+        window.cancelAnimationFrame(currentAnimation);
       }
 
       setClickCount(prev => prev + 1);
@@ -198,9 +198,12 @@ export default function HelloWorldPage() {
         .style('opacity', 0);
     });
 
+    // 在 effect 内部捕获当前的 ref 值
+    const currentAnimationRef = animationRef.current;
+
     return () => {
-      if (animationRef.current) {
-        window.cancelAnimationFrame(animationRef.current);
+      if (currentAnimationRef) {
+        window.cancelAnimationFrame(currentAnimationRef);
       }
     };
   }, [language, clickCount, content]);

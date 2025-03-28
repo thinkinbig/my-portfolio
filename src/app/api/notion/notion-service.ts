@@ -1,16 +1,28 @@
 import { Client } from '@notionhq/client';
+import type {
+  GetDatabaseResponse,
+  GetPageResponse,
+  GetBlockResponse,
+  UserObjectResponse,
+  SearchResponse,
+  QueryDatabaseResponse,
+  ListBlockChildrenResponse,
+  ListCommentsResponse,
+  SearchParameters,
+  QueryDatabaseParameters
+} from '@notionhq/client/build/src/api-endpoints';
 
 // 定义类型
 interface QueryOptions {
   pageSize?: number;
   startCursor?: string;
-  sorts?: any[];
-  filter?: any;
+  sorts?: QueryDatabaseParameters['sorts'];
+  filter?: QueryDatabaseParameters['filter'];
 }
 
 interface SearchOptions {
-  filter?: any;
-  sort?: any;
+  filter?: SearchParameters['filter'];
+  sort?: SearchParameters['sort'];
   pageSize?: number;
   startCursor?: string;
 }
@@ -21,13 +33,13 @@ interface BlockOptions {
 }
 
 interface PageContent {
-  page: any;
-  blocks: any;
+  page: GetPageResponse;
+  blocks: ListBlockChildrenResponse;
 }
 
 interface DatabaseContent {
-  database: any;
-  content: any;
+  database: GetDatabaseResponse;
+  content: QueryDatabaseResponse;
 }
 
 // 创建 Notion 客户端
@@ -43,7 +55,7 @@ const createNotionClient = (): Client => {
 const notionClient = createNotionClient();
 
 // 用户相关
-export const getUser = async (): Promise<any> => {
+export const getUser = async (): Promise<UserObjectResponse> => {
   try {
     return await notionClient.users.me({});
   } catch (error) {
@@ -53,7 +65,7 @@ export const getUser = async (): Promise<any> => {
 };
 
 // 数据库相关
-export const getDatabase = async (databaseId: string): Promise<any> => {
+export const getDatabase = async (databaseId: string): Promise<GetDatabaseResponse> => {
   try {
     return await notionClient.databases.retrieve({
       database_id: databaseId
@@ -64,15 +76,15 @@ export const getDatabase = async (databaseId: string): Promise<any> => {
   }
 };
 
-export const queryDatabase = async (databaseId: string, options: QueryOptions = {}): Promise<any> => {
+export const queryDatabase = async (databaseId: string, options: QueryOptions = {}): Promise<QueryDatabaseResponse> => {
   const {
     pageSize = 100,
     startCursor = undefined,
-    sorts = []
+    filter
   } = options;
 
   try {
-    const queryParams: any = {
+    const queryParams: QueryDatabaseParameters = {
       database_id: databaseId,
       page_size: pageSize,
       start_cursor: startCursor,
@@ -80,8 +92,8 @@ export const queryDatabase = async (databaseId: string, options: QueryOptions = 
     };
 
     // 只有当 filter 存在时才添加到查询参数中
-    if (options.filter) {
-      queryParams.filter = options.filter;
+    if (filter) {
+      queryParams.filter = filter;
     }
 
     return await notionClient.databases.query(queryParams);
@@ -92,7 +104,7 @@ export const queryDatabase = async (databaseId: string, options: QueryOptions = 
 };
 
 // 页面相关
-export const getPage = async (pageId: string): Promise<any> => {
+export const getPage = async (pageId: string): Promise<GetPageResponse> => {
   try {
     return await notionClient.pages.retrieve({
       page_id: pageId
@@ -103,7 +115,7 @@ export const getPage = async (pageId: string): Promise<any> => {
   }
 };
 
-export const getPageBlocks = async (pageId: string, options: BlockOptions = {}): Promise<any> => {
+export const getPageBlocks = async (pageId: string, options: BlockOptions = {}): Promise<ListBlockChildrenResponse> => {
   const {
     pageSize = 100,
     startCursor = undefined
@@ -122,7 +134,7 @@ export const getPageBlocks = async (pageId: string, options: BlockOptions = {}):
 };
 
 // 搜索相关
-export const search = async (query: string, options: SearchOptions = {}): Promise<any> => {
+export const search = async (query: string, options: SearchOptions = {}): Promise<SearchResponse> => {
   const {
     filter = undefined,
     sort = undefined,
@@ -131,7 +143,7 @@ export const search = async (query: string, options: SearchOptions = {}): Promis
   } = options;
 
   try {
-    const searchParams: any = {
+    const searchParams: SearchParameters = {
       query,
       page_size: pageSize,
       start_cursor: startCursor
@@ -153,7 +165,7 @@ export const search = async (query: string, options: SearchOptions = {}): Promis
 };
 
 // 评论相关
-export const getComments = async (blockId: string, options: BlockOptions = {}): Promise<any> => {
+export const getComments = async (blockId: string, options: BlockOptions = {}): Promise<ListCommentsResponse> => {
   const {
     pageSize = 100,
     startCursor = undefined
@@ -172,7 +184,7 @@ export const getComments = async (blockId: string, options: BlockOptions = {}): 
 };
 
 // 工作区相关
-export const getWorkspace = async (): Promise<any> => {
+export const getWorkspace = async (): Promise<UserObjectResponse> => {
   try {
     return await notionClient.users.me({});
   } catch (error) {
@@ -182,7 +194,7 @@ export const getWorkspace = async (): Promise<any> => {
 };
 
 // 批量操作
-export const batchGetBlocks = async (blockIds: string[]): Promise<any[]> => {
+export const batchGetBlocks = async (blockIds: string[]): Promise<GetBlockResponse[]> => {
   try {
     const promises = blockIds.map(id => 
       notionClient.blocks.retrieve({ block_id: id })
