@@ -1,0 +1,78 @@
+.tooltip {
+  position: absolute;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  max-width: 300px;
+}
+
+.tooltipTitle {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.tooltipDescription {
+  font-size: 0.9em;
+  color: var(--text-color);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.tooltipLink {
+  display: inline-block;
+  color: var(--node-hover-color);
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.2s;
+}
+
+.tooltipLink:hover {
+  color: var(--node-highlight-color);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 4px;
+  background: var(--background-color);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.tabActive {
+  background: var(--node-hover-color);
+  color: white;
+}
+
+.tabIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 

@@ -3,18 +3,58 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 默认视图颜色 */
+  --node-color: #6b7280;
+  --node-hover-color: #059669;
+  --node-highlight-color: #10b981;
+  --node-faded-color: #d1fae5;
+  --link-color: #a8a29e;
+  --link-highlight-color: #059669;
+  --link-faded-color: #e5e7eb;
+  --text-color: #4b5563;
+  --background-color: #f3f4f6;
+  --card-background-color: white;
+
+  /* 课程视图颜色 */
+  --course-node-color: #6b7280;
+  --course-node-hover-color: #059669;
+  --course-node-highlight-color: #10b981;
+  --course-node-faded-color: #d1fae5;
+  --course-link-color: #a8a29e;
+  --course-link-highlight-color: #059669;
+  --course-link-faded-color: #e5e7eb;
+  --course-background-color: #f3f4f6;
+  --course-card-background-color: white;
 }
 
-:root.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+.dark {
+  /* 默认视图暗色主题 */
+  --node-color: #4b5563;
+  --node-hover-color: #34d399;
+  --node-highlight-color: #059669;
+  --node-faded-color: #064e3b;
+  --link-color: #6b7280;
+  --link-highlight-color: #34d399;
+  --link-faded-color: #374151;
+  --text-color: #9ca3af;
+  --background-color: #111827;
+  --card-background-color: #1f2937;
+
+  /* 课程视图暗色主题 */
+  --course-node-color: #4b5563;
+  --course-node-hover-color: #34d399;
+  --course-node-highlight-color: #059669;
+  --course-node-faded-color: #064e3b;
+  --course-link-color: #6b7280;
+  --course-link-highlight-color: #34d399;
+  --course-link-faded-color: #374151;
+  --course-background-color: #111827;
+  --course-card-background-color: #1f2937;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--text-color);
+  background: var(--background-color);
   font-family: Arial, Helvetica, sans-serif;
 }
 

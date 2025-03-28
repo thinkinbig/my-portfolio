@@ -1,10 +1,15 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import { Concept } from '../types';
 import { fetchConcepts } from '../notionService';
-import './styles.css';  // 导入样式文件
+import styles from './KnowledgeGraph.module.css';  // 导入 CSS Modules
+import { useTheme } from '@/contexts/ThemeContext';
+
+// 添加视图类型枚举
+type ViewType = 'default' | 'courseware';
 
 interface Node {
   id: string;
@@ -15,6 +20,8 @@ interface Node {
   vy?: number;
   fx?: number | null;
   fy?: number | null;
+  color?: string;
+  courseware?: string;
 }
 
 interface Link {
@@ -27,9 +34,13 @@ const useConcepts = () => {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const loadingRef = useRef(false);
 
   const loadConcepts = useCallback(async () => {
+    if (loadingRef.current) return;
+    
     try {
+      loadingRef.current = true;
       setLoading(true);
       setError(null);
       const data = await fetchConcepts();
@@ -39,28 +50,69 @@ const useConcepts = () => {
       console.error('Failed to fetch concepts:', err);
     } finally {
       setLoading(false);
+      loadingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
-    loadConcepts();
-  }, [loadConcepts]);
+    if (concepts.length === 0) {
+      loadConcepts();
+    }
+  }, [loadConcepts, concepts.length]);
 
   return { concepts, loading, error, refetch: loadConcepts };
 };
 
-export default function KnowledgeGraphComponent() {
+// 使用 dynamic 导入，禁用 SSR
+const KnowledgeGraphComponent = dynamic(() => Promise.resolve(KnowledgeGraphComponentInner), {
+  ssr: false
+});
+
+// 将主要组件逻辑移到内部组件
+function KnowledgeGraphComponentInner() {
   const simulationRef = useRef<d3.Simulation<Node, Link> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<d3.Selection<SVGSVGElement, unknown, HTMLElement, undefined> | null>(null);
   const tooltipRef = useRef<d3.Selection<HTMLDivElement, unknown, HTMLElement, undefined> | null>(null);
   const { concepts, loading, error } = useConcepts();
+  const [viewType, setViewType] = useState<ViewType>('default');
+  const { theme } = useTheme();
+
+  // 获取当前主题的颜色
+  const colors = useMemo(() => {
+    if (theme === 'dark') {
+      return {
+        node: '#4b5563',
+        nodeHover: '#34d399',
+        nodeHighlight: '#059669',
+        nodeFaded: '#064e3b',
+        link: '#6b7280',
+        linkHighlight: '#34d399',
+        linkFaded: '#374151',
+        text: '#9ca3af',
+        background: '#111827'
+      };
+    } else {
+      return {
+        node: '#6b7280',
+        nodeHover: '#059669',
+        nodeHighlight: '#10b981',
+        nodeFaded: '#d1fae5',
+        link: '#a8a29e',
+        linkHighlight: '#059669',
+        linkFaded: '#e5e7eb',
+        text: '#4b5563',
+        background: 'white'
+      };
+    }
+  }, [theme]);
 
   // 准备节点和连接线数据
   const { nodes, links } = useMemo(() => {
     const nodes: Node[] = concepts.map(concept => ({
       id: concept.id,
-      name: concept.title
+      name: concept.title,
+      courseware: concept.relatedCourseware?.[0] || '未分类'  // 获取第一个相关课程
     }));
 
     const links: Link[] = [];
@@ -76,6 +128,15 @@ export default function KnowledgeGraphComponent() {
     });
 
     return { nodes, links };
+  }, [concepts]);
+
+  // 生成课程颜色映射
+  const coursewareColors = useMemo(() => {
+    const uniqueCoursewares = Array.from(new Set(concepts.map(c => c.relatedCourseware?.[0] || '未分类')));
+    const colorScale = d3.scaleOrdinal<string, string>(d3.schemeCategory10);
+    return Object.fromEntries(
+      uniqueCoursewares.map((courseware, index) => [courseware, colorScale(index.toString())])
+    );
   }, [concepts]);
 
   // 获取容器尺寸的函数
@@ -108,7 +169,7 @@ export default function KnowledgeGraphComponent() {
     // 创建 tooltip div
     tooltipRef.current = d3.select('#graph-container')
       .append('div')
-      .attr('class', 'graph-tooltip');
+      .attr('class', styles.tooltip);
 
     return { width, height };
   }, [getContainerSize]);
@@ -130,15 +191,12 @@ export default function KnowledgeGraphComponent() {
 
     // 创建缩放行为
     const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.1, 4]) // 设置缩放范围
+      .scaleExtent([0.1, 4])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
       });
 
-    // 应用缩放行为到 SVG
     svg.call(zoom);
-
-    // 创建一个容器组来包含所有元素
     const g = svg.append('g');
 
     // 创建力导向图
@@ -147,7 +205,6 @@ export default function KnowledgeGraphComponent() {
       .force('charge', d3.forceManyBody().strength(-300))
       .force('center', d3.forceCenter(width / 2, height / 2));
 
-    // 保存simulation引用
     simulationRef.current = simulation;
 
     // 绘制连接线
@@ -156,7 +213,26 @@ export default function KnowledgeGraphComponent() {
       .data(links)
       .enter()
       .append('line')
-      .attr('stroke', '#a8a29e')
+      .attr('stroke', (l: Link) => {
+        if (viewType === 'courseware') {
+          const sourceNode = nodes.find(n => n.id === (l.source as Node).id);
+          const targetNode = nodes.find(n => n.id === (l.target as Node).id);
+          if (!sourceNode || !targetNode) {
+            return 'var(--course-link-color)';
+          }
+          if (sourceNode.courseware === targetNode.courseware) {
+            const color = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
+            return color ? color.copy({ opacity: 0.2 }).toString() : 'var(--course-link-color)';
+          }
+          const sourceColor = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
+          const targetColor = d3.color(coursewareColors[targetNode.courseware || '未分类']);
+          if (sourceColor && targetColor) {
+            const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
+            return d3.color(mixedColor)?.copy({ opacity: 0.2 }).toString() || 'var(--course-link-color)';
+          }
+        }
+        return 'var(--link-color)';
+      })
       .attr('stroke-opacity', 0.2)
       .attr('stroke-width', 1);
 
@@ -167,7 +243,9 @@ export default function KnowledgeGraphComponent() {
       .enter()
       .append('circle')
       .attr('r', 12)
-      .attr('fill', '#6b7280')  // 使用统一的灰色
+      .attr('fill', d => viewType === 'courseware' ? coursewareColors[d.courseware || '未分类'] : 'var(--node-color)')
+      .attr('stroke', 'white')
+      .attr('stroke-width', 2)
       .style('cursor', 'pointer')
       .call(d3.drag<SVGCircleElement, Node>()
         .on('start', dragstarted)
@@ -187,7 +265,7 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 16)
-          .attr('fill', '#059669');
+          .attr('fill', viewType === 'courseware' ? coursewareColors[currentNode.courseware || '未分类'] : 'var(--node-hover-color)');
 
         // 高亮相连的节点
         node
@@ -201,7 +279,11 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 14)
-          .attr('fill', '#10b981');
+          .attr('fill', function(n) {
+            return viewType === 'courseware' 
+              ? coursewareColors[n.courseware || '未分类'] 
+              : 'var(--node-highlight-color)';
+          });
 
         // 高亮相连的连接线
         link
@@ -211,22 +293,48 @@ export default function KnowledgeGraphComponent() {
           )
           .transition()
           .duration(200)
-          .attr('stroke', '#059669')
+          .attr('stroke', function(l: Link) {
+            if (viewType === 'courseware') {
+              const otherNodeId = (l.source as Node).id === currentNode.id 
+                ? (l.target as Node).id 
+                : (l.source as Node).id;
+              const otherNode = nodes.find(n => n.id === otherNodeId);
+              const sourceColor = d3.color(coursewareColors[currentNode.courseware || '未分类']);
+              const targetColor = d3.color(coursewareColors[otherNode?.courseware || '未分类']);
+              
+              if (currentNode.courseware === otherNode?.courseware) {
+                return sourceColor?.copy({ opacity: 0.6 }).toString() || 'var(--course-link-highlight-color)';
+              }
+              
+              if (sourceColor && targetColor) {
+                const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
+                return d3.color(mixedColor)?.copy({ opacity: 0.6 }).toString() || 'var(--course-link-highlight-color)';
+              }
+            }
+            return 'var(--link-highlight-color)';
+          })
           .attr('stroke-width', 2)
           .attr('stroke-opacity', 0.4);
 
-        // 淡化其他元素
+        // 淡化未连接的节点
         node
-          .filter(n => n.id !== currentNode.id)
-          .filter(n => !links.some(l => 
-            (l.source as Node).id === currentNode.id && (l.target as Node).id === n.id ||
-            (l.target as Node).id === currentNode.id && (l.source as Node).id === n.id
-          ))
+          .filter(n => {
+            const isConnected = links.some(l => 
+              (l.source as Node).id === currentNode.id && (l.target as Node).id === n.id ||
+              (l.target as Node).id === currentNode.id && (l.source as Node).id === n.id
+            );
+            return !isConnected && n.id !== currentNode.id;
+          })
           .transition()
           .duration(200)
           .attr('r', 8)
-          .attr('fill', '#d1fae5');
+          .attr('fill', function(n) {
+            return viewType === 'courseware' 
+              ? d3.color(coursewareColors[n.courseware || '未分类'])?.darker(0.5).toString() || 'var(--course-node-faded-color)'
+              : 'var(--node-faded-color)';
+          });
 
+        // 淡化未连接的连接线
         link
           .filter(l => 
             (l.source as Node).id !== currentNode.id && 
@@ -234,7 +342,26 @@ export default function KnowledgeGraphComponent() {
           )
           .transition()
           .duration(200)
-          .attr('stroke', '#e5e7eb')
+          .attr('stroke', l => {
+            if (viewType === 'courseware') {
+              const sourceNode = nodes.find(n => n.id === (l.source as Node).id);
+              const targetNode = nodes.find(n => n.id === (l.target as Node).id);
+              if (!sourceNode || !targetNode) {
+                return 'var(--course-link-faded-color)';
+              }
+              if (sourceNode.courseware === targetNode.courseware) {
+                const color = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
+                return color ? color.copy({ opacity: 0.1 }).toString() : 'var(--course-link-faded-color)';
+              }
+              const sourceColor = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
+              const targetColor = d3.color(coursewareColors[targetNode.courseware || '未分类']);
+              if (sourceColor && targetColor) {
+                const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
+                return d3.color(mixedColor)?.copy({ opacity: 0.1 }).toString() || 'var(--course-link-faded-color)';
+              }
+            }
+            return 'var(--link-faded-color)';
+          })
           .attr('stroke-width', 1)
           .attr('stroke-opacity', 0.1);
 
@@ -244,9 +371,9 @@ export default function KnowledgeGraphComponent() {
           tooltip
             .style('opacity', 1)
             .html(`
-              <div class="graph-tooltip-title">${concept.title}</div>
-              <div class="graph-tooltip-description">${concept.description || '暂无描述'}</div>
-              <a href="${concept.publicUrl}" target="_blank" class="graph-tooltip-link">
+              <div class="${styles.tooltipTitle}">${concept.title}</div>
+              <div class="${styles.tooltipDescription}">${concept.description || '暂无描述'}</div>
+              <a href="${concept.publicUrl}" target="_blank" class="${styles.tooltipLink}">
                 在 Notion 中查看 →
               </a>
             `)
@@ -265,12 +392,31 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 12)
-          .attr('fill', '#6b7280');  // 恢复统一的灰色
+          .attr('fill', d => viewType === 'courseware' ? coursewareColors[d.courseware || '未分类'] : 'var(--node-color)');
 
         link
           .transition()
           .duration(200)
-          .attr('stroke', '#a8a29e')
+          .attr('stroke', l => {
+            if (viewType === 'courseware') {
+              const sourceNode = nodes.find(n => n.id === (l.source as Node).id);
+              const targetNode = nodes.find(n => n.id === (l.target as Node).id);
+              if (!sourceNode || !targetNode) {
+                return 'var(--course-link-color)';
+              }
+              if (sourceNode.courseware === targetNode.courseware) {
+                const color = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
+                return color ? color.copy({ opacity: 0.2 }).toString() : 'var(--course-link-color)';
+              }
+              const sourceColor = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
+              const targetColor = d3.color(coursewareColors[targetNode.courseware || '未分类']);
+              if (sourceColor && targetColor) {
+                const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
+                return d3.color(mixedColor)?.copy({ opacity: 0.2 }).toString() || 'var(--course-link-color)';
+              }
+            }
+            return 'var(--link-color)';
+          })
           .attr('stroke-width', 1)
           .attr('stroke-opacity', 0.2);
 
@@ -288,7 +434,7 @@ export default function KnowledgeGraphComponent() {
       .attr('font-size', '12px')
       .attr('dx', 20)
       .attr('dy', 4)
-      .attr('fill', '#4b5563')
+      .attr('fill', 'var(--text-color)')
       .attr('pointer-events', 'none')
       .style('cursor', 'pointer')
       .on('click', (event, d) => {
@@ -336,7 +482,7 @@ export default function KnowledgeGraphComponent() {
       subject.fx = null;
       subject.fy = null;
     }
-  }, [concepts]);
+  }, [concepts, viewType, coursewareColors]);
 
   // 初始化图表和更新数据
   useEffect(() => {
@@ -392,11 +538,38 @@ export default function KnowledgeGraphComponent() {
 
   return (
     <div className="p-4">
+      <div className={styles.tabs}>
+        <button
+          onClick={() => setViewType('default')}
+          className={`${styles.tab} ${viewType === 'default' ? styles.tabActive : ''}`}
+        >
+          <span className={styles.tabIcon}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+            </svg>
+          </span>
+          默认视图
+        </button>
+        <button
+          onClick={() => setViewType('courseware')}
+          className={`${styles.tab} ${viewType === 'courseware' ? styles.tabActive : ''}`}
+        >
+          <span className={styles.tabIcon}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+              <path d="M12 4v16" />
+            </svg>
+          </span>
+          课程分组视图
+        </button>
+      </div>
       <div 
         ref={containerRef}
         id="graph-container" 
-        className="border rounded-lg p-4 bg-white h-[calc(100vh-200px)]"
+        className="border rounded-lg p-4 bg-white dark:bg-gray-900 h-[calc(100vh-200px)]"
       ></div>
     </div>
   );
-} 
+}
+
+export default KnowledgeGraphComponent; 
