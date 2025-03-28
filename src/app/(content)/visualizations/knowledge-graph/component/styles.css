@@ -1,0 +1,40 @@
+.graph-tooltip {
+  opacity: 0;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  pointer-events: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-width: 300px;
+  z-index: 1000;
+}
+
+.graph-tooltip-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.graph-tooltip-description {
+  color: #4b5563;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.graph-tooltip-link {
+  display: inline-block;
+  color: #059669;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #ecfdf5;
+  transition: all 0.2s;
+}
+
+.graph-tooltip-link:hover {
+  background-color: #d1fae5;
+} 

@@ -18,6 +18,11 @@ interface VisualizationContent {
     viewDetails: string;
     content?: HelloWorldContent;
   };
+  knowledgeGraph: {
+    title: string;
+    description: string;
+    viewDetails: string;
+  };
 }
 
 export default function VisualizationsPage() {
@@ -103,6 +108,12 @@ export default function VisualizationsPage() {
           >
             {content.helloworld.viewDetails}
           </a>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-2">{content.knowledgeGraph.title}</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            {content.knowledgeGraph.description}
+          </p>
         </div>
       </div>
     </div>
