@@ -399,20 +399,19 @@ All services run in Docker containers and are automatically deployed to Google C
   visualizations: {
     title: "Data Visualizations",
     d3: {
-      title: "D3.js Visualizations",
-      description: "Interactive data visualizations created with D3.js",
+      title: "D3.js Examples",
+      description: "Interactive data visualizations created with D3.js, showcasing various chart types and animation effects.",
       viewDetails: "View Details"
     },
     helloworld: {
-      title: "Hello World Visualization",
-      description: "A simple Hello World visualization example showcasing basic data visualization concepts",
-      viewDetails: "View Details",
-      content: {
-        clickMe: "Click me",
-        animating: "Animating...",
-        clicks: "Clicks: ",
-        title: "SVG Interaction Demo"
-      }
+      title: "Hello World",
+      description: "A simple Hello World example demonstrating basic data visualization concepts.",
+      viewDetails: "View Details"
+    },
+    knowledgeGraph: {
+      title: "Knowledge Graph",
+      description: "An interactive knowledge graph built with Notion database, showing relationships between concepts.",
+      viewDetails: "View Details"
     }
   }
 } as const; 

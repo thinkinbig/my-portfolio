@@ -114,6 +114,12 @@ export default function VisualizationsPage() {
           <p className="text-gray-600 dark:text-gray-300 mb-4">
             {content.knowledgeGraph.description}
           </p>
+          <a
+            href="/visualizations/knowledge-graph"
+            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+          >
+            {content.knowledgeGraph.viewDetails}
+          </a>
         </div>
       </div>
     </div>

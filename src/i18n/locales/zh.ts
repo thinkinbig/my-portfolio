@@ -457,20 +457,19 @@ export const zh = {
   visualizations: {
     title: "数据可视化",
     d3: {
-      title: "D3.js 可视化",
-      description: "使用 D3.js 创建的交互式数据可视化展示",
+      title: "D3.js 示例",
+      description: "使用 D3.js 创建的交互式数据可视化示例，展示了各种图表类型和动画效果。",
       viewDetails: "查看详情"
     },
     helloworld: {
-      title: "Hello World 可视化",
-      description: "一个简单的 Hello World 可视化示例，展示基本的数据可视化概念",
-      viewDetails: "查看详情",
-      content: {
-        clickMe: "点击我",
-        animating: "动画中...",
-        clicks: "点击次数: ",
-        title: "SVG 交互示例"
-      }
+      title: "Hello World",
+      description: "一个简单的 Hello World 示例，展示了基本的数据可视化概念。",
+      viewDetails: "查看详情"
+    },
+    knowledgeGraph: {
+      title: "知识图谱",
+      description: "基于 Notion 数据库构建的交互式知识图谱，展示了概念之间的关联关系。",
+      viewDetails: "查看详情"
     }
   }
 } as const; 

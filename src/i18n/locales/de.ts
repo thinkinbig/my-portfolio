@@ -397,22 +397,21 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
     backHome: "Zurück zur Startseite"
   },
   visualizations: {
-    title: "Datenvisualisierung",
+    title: "Datenvisualisierungen",
     d3: {
-      title: "D3.js Visualisierung",
-      description: "Interaktive Datenvisualisierungen mit D3.js",
+      title: "D3.js Beispiele",
+      description: "Interaktive Datenvisualisierungen erstellt mit D3.js, die verschiedene Diagrammtypen und Animationseffekte zeigen.",
       viewDetails: "Details anzeigen"
     },
     helloworld: {
-      title: "Hello World Visualisierung",
-      description: "Ein einfaches Hello World Visualisierungsbeispiel, das grundlegende Datenvisualisierungskonzepte zeigt",
-      viewDetails: "Details anzeigen",
-      content: {
-        clickMe: "Klick mich",
-        animating: "Animiert...",
-        clicks: "Klicks: ",
-        title: "SVG Interaktions-Demo"
-      }
+      title: "Hello World",
+      description: "Ein einfaches Hello World Beispiel, das grundlegende Konzepte der Datenvisualisierung demonstriert.",
+      viewDetails: "Details anzeigen"
+    },
+    knowledgeGraph: {
+      title: "Wissensgraph",
+      description: "Ein interaktiver Wissensgraph basierend auf einer Notion-Datenbank, der Beziehungen zwischen Konzepten zeigt.",
+      viewDetails: "Details anzeigen"
     }
   }
 } as const; 
