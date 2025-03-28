@@ -6,7 +6,6 @@ import * as d3 from 'd3';
 import { Concept } from '../types';
 import { fetchConcepts } from '../notionService';
 import styles from './KnowledgeGraph.module.css';  // 导入 CSS Modules
-import { useTheme } from '@/contexts/ThemeContext';
 
 // 添加视图类型枚举
 type ViewType = 'default' | 'courseware';
@@ -76,36 +75,6 @@ function KnowledgeGraphComponentInner() {
   const tooltipRef = useRef<d3.Selection<HTMLDivElement, unknown, HTMLElement, undefined> | null>(null);
   const { concepts, loading, error } = useConcepts();
   const [viewType, setViewType] = useState<ViewType>('default');
-  const { theme } = useTheme();
-
-  // 获取当前主题的颜色
-  const colors = useMemo(() => {
-    if (theme === 'dark') {
-      return {
-        node: '#4b5563',
-        nodeHover: '#34d399',
-        nodeHighlight: '#059669',
-        nodeFaded: '#064e3b',
-        link: '#6b7280',
-        linkHighlight: '#34d399',
-        linkFaded: '#374151',
-        text: '#9ca3af',
-        background: '#111827'
-      };
-    } else {
-      return {
-        node: '#6b7280',
-        nodeHover: '#059669',
-        nodeHighlight: '#10b981',
-        nodeFaded: '#d1fae5',
-        link: '#a8a29e',
-        linkHighlight: '#059669',
-        linkFaded: '#e5e7eb',
-        text: '#4b5563',
-        background: 'white'
-      };
-    }
-  }, [theme]);
 
   // 准备节点和连接线数据
   const { nodes, links } = useMemo(() => {
