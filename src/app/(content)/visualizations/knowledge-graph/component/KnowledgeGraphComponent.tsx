@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import { Concept } from '../types';
 import { fetchConcepts } from '../notionService';
-import styles from './KnowledgeGraph.module.css';  // 导入 CSS Modules
+import styles from './KnowledgeGraph.module.css';
 
 // 添加视图类型枚举
 type ViewType = 'default' | 'courseware';

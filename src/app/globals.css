@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 预设暗色主题，防止闪烁 */
+:root {
+  color-scheme: dark;
+}
+
 :root {
   /* 默认视图颜色 */
   --node-color: #6b7280;

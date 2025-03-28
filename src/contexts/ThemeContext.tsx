@@ -12,28 +12,20 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
-    // 初始化主题
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else if (prefersDark) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
+    // 从 localStorage 读取主题设置，如果没有则使用暗色主题
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme as 'light' | 'dark');
+    document.documentElement.className = savedTheme;
   }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
-    console.log('Toggling theme to:', newTheme);
     setTheme(newTheme);
-    document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', newTheme);
+    document.documentElement.className = newTheme;
   };
 
   return (
