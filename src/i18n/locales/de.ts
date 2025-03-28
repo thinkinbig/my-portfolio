@@ -406,7 +406,13 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
     helloworld: {
       title: "Hello World",
       description: "Ein einfaches Hello World Beispiel, das grundlegende Konzepte der Datenvisualisierung demonstriert.",
-      viewDetails: "Details anzeigen"
+      viewDetails: "Details anzeigen",
+      content: {
+        title: "SVG Interaktion Beispiel",
+        clickMe: "Klicken Sie mich",
+        animating: "Animation...",
+        clicks: "Klickzähler: "
+      }
     },
     knowledgeGraph: {
       title: "Wissensgraph",

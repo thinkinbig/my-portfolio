@@ -406,7 +406,13 @@ All services run in Docker containers and are automatically deployed to Google C
     helloworld: {
       title: "Hello World",
       description: "A simple Hello World example demonstrating basic data visualization concepts.",
-      viewDetails: "View Details"
+      viewDetails: "View Details",
+      content: {
+        title: "SVG Interaction Demo",
+        clickMe: "Click me",
+        animating: "Animating...",
+        clicks: "Clicks: "
+      }
     },
     knowledgeGraph: {
       title: "Knowledge Graph",

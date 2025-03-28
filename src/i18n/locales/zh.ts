@@ -464,7 +464,13 @@ export const zh = {
     helloworld: {
       title: "Hello World",
       description: "一个简单的 Hello World 示例，展示了基本的数据可视化概念。",
-      viewDetails: "查看详情"
+      viewDetails: "查看详情",
+      content: {
+        title: "SVG 交互示例",
+        clickMe: "点击我",
+        animating: "动画中...",
+        clicks: "点击次数: "
+      }
     },
     knowledgeGraph: {
       title: "知识图谱",
