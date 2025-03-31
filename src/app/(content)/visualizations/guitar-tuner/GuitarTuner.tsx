@@ -405,35 +405,25 @@ export default function GuitarTuner({
   return (
     <div className={`min-h-screen bg-gradient-to-b ${themeColors.background} p-8`}>
       <div className="max-w-7xl mx-auto">
-        {/* 标题区域 */}
-        <div className="text-center mb-8">
-          <h1 className={`text-3xl font-bold ${themeColors.text.primary} mb-2`}>吉他调音器</h1>
-          <p className={`${themeColors.text.secondary} text-sm`}>专业级吉他调音工具</p>
-        </div>
-
         {/* 主要内容区域 - 使用网格布局 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* 左侧效果器 */}
           <div className="relative">
             {/* 效果器外壳 */}
-            <div className={`relative bg-gradient-to-br ${
-              colorTheme === 'dark' 
-                ? 'from-zinc-300 via-zinc-100 to-zinc-400' 
-                : 'from-zinc-200 via-zinc-50 to-zinc-300'
-            } rounded-lg shadow-2xl overflow-hidden
+            <div className={`relative bg-gradient-to-br ${colorTheme === 'dark' ? 'from-zinc-800 via-zinc-700 to-zinc-900' : 'from-zinc-300 via-zinc-100 to-zinc-400'} rounded-lg shadow-2xl overflow-hidden
               before:absolute before:inset-0 before:bg-gradient-to-tr before:from-transparent before:via-white/30 before:to-transparent before:opacity-50
               after:absolute after:inset-0 after:bg-gradient-to-bl after:from-black/5 after:via-transparent after:to-black/5
               border-t border-white/20`}>
               {/* 摇滚装饰元素 */}
-              <div className="absolute -top-2 -left-2 w-4 h-4 bg-zinc-800 rounded-full border-2 border-zinc-600"></div>
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-zinc-800 rounded-full border-2 border-zinc-600"></div>
-              <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-zinc-800 rounded-full border-2 border-zinc-600"></div>
-              <div className="absolute -bottom-2 -right-2 w-4 h-4 bg-zinc-800 rounded-full border-2 border-zinc-600"></div>
+              <div className={`absolute -top-2 -left-2 w-4 h-4 ${colorTheme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-800'} rounded-full border-2 ${colorTheme === 'dark' ? 'border-zinc-700' : 'border-zinc-600'}`}></div>
+              <div className={`absolute -top-2 -right-2 w-4 h-4 ${colorTheme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-800'} rounded-full border-2 ${colorTheme === 'dark' ? 'border-zinc-700' : 'border-zinc-600'}`}></div>
+              <div className={`absolute -bottom-2 -left-2 w-4 h-4 ${colorTheme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-800'} rounded-full border-2 ${colorTheme === 'dark' ? 'border-zinc-700' : 'border-zinc-600'}`}></div>
+              <div className={`absolute -bottom-2 -right-2 w-4 h-4 ${colorTheme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-800'} rounded-full border-2 ${colorTheme === 'dark' ? 'border-zinc-700' : 'border-zinc-600'}`}></div>
               
               {/* 显示屏部分 */}
-              <div className="bg-black p-6 relative border-4 border-zinc-800 m-3 rounded-md">
+              <div className={`bg-black p-6 relative border-4 ${colorTheme === 'dark' ? 'border-zinc-900' : 'border-zinc-800'} m-3 rounded-md`}>
                 {/* 模式显示 */}
-                <div className="flex justify-between text-xs text-gray-400 mb-2">
+                <div className={`flex justify-between text-xs ${colorTheme === 'dark' ? 'text-gray-500' : 'text-gray-400'} mb-2`}>
                   <div>BASS 6 5 4 3 2 b GUITAR 2 b CHROMATIC</div>
                 </div>
 
@@ -443,8 +433,8 @@ export default function GuitarTuner({
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className={`text-4xl font-mono font-bold ${
                       Math.abs(cents) < 5
-                        ? 'text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]'
-                        : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+                        ? `${themeColors.text.accent} drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]`
+                        : `${themeColors.text.error} drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]`
                     }`}>
                       {currentNote || '--'}
                     </div>
@@ -452,10 +442,10 @@ export default function GuitarTuner({
 
                   {/* 频率显示 */}
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-2">
-                    <div className="text-green-500 font-mono text-sm drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">
+                    <div className={`${themeColors.text.accent} font-mono text-sm drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]`}>
                       {currentFrequency ? `${currentFrequency.toFixed(1)} Hz` : '--'}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className={`text-xs ${themeColors.text.secondary}`}>
                       {cents ? `${cents > 0 ? '+' : ''}${cents.toFixed(1)}¢` : ''}
                     </div>
                   </div>
@@ -465,17 +455,17 @@ export default function GuitarTuner({
                 <div className="absolute top-2 right-4">
                   <div className={`w-2 h-2 rounded-full ${
                     isRecording
-                      ? 'bg-red-500 animate-pulse'
+                      ? `${themeColors.text.error} animate-pulse`
                       : 'bg-gray-800'
                   }`} />
                 </div>
               </div>
 
               {/* 效果器底部 */}
-              <div className="bg-gradient-to-b from-zinc-200 to-zinc-400 p-6 relative
-                before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent">
+              <div className={`bg-gradient-to-b ${colorTheme === 'dark' ? 'from-zinc-800 to-zinc-900' : 'from-zinc-200 to-zinc-400'} p-6 relative
+                before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent`}>
                 {/* 输入输出标签 */}
-                <div className="flex justify-between text-red-600 font-bold mb-4 text-shadow-sm">
+                <div className={`flex justify-between ${themeColors.text.error} font-bold mb-4 text-shadow-sm`}>
                   <div className="flex items-center">
                     <span className="mr-2 text-lg">←</span>
                     <span className="tracking-wider">OUTPUT</span>
@@ -489,22 +479,22 @@ export default function GuitarTuner({
                 {/* 开关按钮 */}
                 <button
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`w-full h-16 bg-zinc-800 rounded-lg shadow-lg flex items-center justify-center
+                  className={`w-full h-16 ${colorTheme === 'dark' ? 'bg-zinc-900' : 'bg-zinc-800'} rounded-lg shadow-lg flex items-center justify-center
                     ${isRecording ? 'bg-opacity-90 ring-2 ring-red-500/50' : 'bg-opacity-100'}
                     transition-all duration-200 transform active:scale-95 active:shadow-inner
                     hover:shadow-red-500/20 hover:shadow-lg relative z-20`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-lg"></div>
-                  <div className="text-white font-bold tracking-wider relative z-10">
+                  <div className={`${themeColors.text.primary} font-bold tracking-wider relative z-10`}>
                     {isRecording ? stopRecordingText : startRecordingText}
                   </div>
                 </button>
 
                 {/* BOSS标志 */}
                 <div className="mt-6 text-center relative">
-                  <div className="text-zinc-800 font-black text-2xl tracking-[0.2em] transform rotate-[-2deg] relative
+                  <div className={`${colorTheme === 'dark' ? 'text-zinc-700' : 'text-zinc-800'} font-black text-2xl tracking-[0.2em] transform rotate-[-2deg] relative
                     before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent
-                    after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-black/10 after:to-transparent">
+                    after:absolute after:inset-0 after:bg-gradient-to-b after:from-transparent after:via-black/10 after:to-transparent`}>
                     BOSS
                   </div>
                 </div>
@@ -519,7 +509,7 @@ export default function GuitarTuner({
               before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50`}>
               <div className="flex justify-between items-center mb-4">
                 <div className={`${themeColors.text.secondary} text-sm font-mono tracking-wider`}>TUNER DISPLAY</div>
-                <div className={`${themeColors.text.secondary} text-sm font-mono`}>{status || '--'}</div>
+                <div className={`text-sm ${themeColors.text.secondary} font-mono`}>{status || '--'}</div>
               </div>
               
               {/* 表盘显示区 */}
@@ -535,7 +525,7 @@ export default function GuitarTuner({
               before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50`}>
               <div className="flex justify-between items-center mb-4">
                 <div className={`${themeColors.text.secondary} text-sm font-mono tracking-wider`}>GUITAR STRINGS</div>
-                <div className={`${themeColors.text.secondary} text-xs font-mono`}>Standard Tuning</div>
+                <div className={`text-xs ${themeColors.text.secondary} font-mono`}>Standard Tuning</div>
               </div>
 
               {/* 吉他弦区域 - 使用网格布局 */}
@@ -566,13 +556,12 @@ export default function GuitarTuner({
                       {/* 播放标准音按钮 */}
                       <button
                         className={`absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full
-                          ${colorTheme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700' : 'bg-gray-200 hover:bg-gray-300'}
-                          active:bg-zinc-600
+                          ${colorTheme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600' : 'bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-500'}
                           flex items-center justify-center transition-colors`}
                         onClick={() => playReferenceNote(string.frequency)}
                       >
                         <div className={`w-0 h-0 border-t-[6px] border-t-transparent
-                          border-l-[10px] ${colorTheme === 'dark' ? 'border-l-zinc-400 hover:border-l-zinc-300' : 'border-l-gray-600 hover:border-l-gray-500'}
+                          border-l-[10px] ${colorTheme === 'dark' ? 'border-l-zinc-400 hover:border-l-zinc-300' : 'border-l-zinc-300 hover:border-l-zinc-200'}
                           border-b-[6px] border-b-transparent ml-1`} />
                       </button>
                     </div>
@@ -581,7 +570,7 @@ export default function GuitarTuner({
                     {currentNote === string.note && (
                       <div className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
                         <div className="text-xs font-mono">
-                          <span className={Math.abs(cents) < 5 ? themeColors.text.accent : themeColors.text.error}>
+                          <span className={`${Math.abs(cents) < 5 ? themeColors.text.accent : themeColors.text.error}`}>
                             {cents > 0 ? '+' : ''}{cents.toFixed(1)}¢
                           </span>
                         </div>
@@ -593,7 +582,7 @@ export default function GuitarTuner({
             </div>
 
             {/* 快速参考显示 */}
-            <div className={`${themeColors.card.background} p-4 rounded-lg backdrop-blur-sm border ${themeColors.card.border} shadow-lg shadow-black/30
+            <div className={`${themeColors.display.background} p-4 rounded-lg backdrop-blur-sm border ${themeColors.display.border} shadow-lg shadow-black/30
               before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50`}>
               <div className="grid grid-cols-6 gap-2">
                 {strings.map((string, index) => (
@@ -601,23 +590,18 @@ export default function GuitarTuner({
                     key={index}
                     className={`text-center p-2 rounded ${
                       currentNote === string.note
-                        ? `${colorTheme === 'dark' ? 'bg-green-500/20' : 'bg-green-600/20'} ${themeColors.text.accent}`
+                        ? 'bg-green-500/20 text-green-500'
                         : themeColors.text.secondary
                     }`}
                   >
-                    <div className="text-xs font-mono">{string.name}</div>
-                    <div className="text-sm font-bold">{string.note}</div>
-                    <div className="text-xs font-mono">{string.frequency.toFixed(1)}</div>
+                    <div className={`text-xs font-mono ${themeColors.text.secondary}`}>{string.name}</div>
+                    <div className={`text-sm font-bold ${themeColors.text.primary}`}>{string.note}</div>
+                    <div className={`text-xs font-mono ${themeColors.text.secondary}`}>{string.frequency.toFixed(1)}</div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </div>
-
-        {/* 底部信息 */}
-        <div className={`mt-12 text-center text-sm ${themeColors.text.secondary}`}>
-          <p>使用麦克风进行实时调音 | 支持标准调音 | 精确到音分</p>
         </div>
       </div>
     </div>
