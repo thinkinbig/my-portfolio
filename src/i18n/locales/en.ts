@@ -397,27 +397,45 @@ All services run in Docker containers and are automatically deployed to Google C
     backHome: "Back to Home"
   },
   visualizations: {
-    title: "Data Visualizations",
+    title: "Data Visualization",
     d3: {
-      title: "D3.js Examples",
-      description: "Interactive data visualizations created with D3.js, showcasing various chart types and animation effects.",
+      title: "D3.js Visualization",
+      description: "Create interactive data visualizations with D3.js",
       viewDetails: "View Details"
     },
     helloworld: {
       title: "Hello World",
-      description: "A simple Hello World example demonstrating basic data visualization concepts.",
-      viewDetails: "View Details",
-      content: {
-        title: "SVG Interaction Demo",
-        clickMe: "Click me",
-        animating: "Animating...",
-        clicks: "Clicks: "
-      }
+      description: "Simple Hello World example",
+      viewDetails: "View Details"
     },
     knowledgeGraph: {
       title: "Knowledge Graph",
-      description: "An interactive knowledge graph built with Notion database, showing relationships between concepts.",
+      description: "Create knowledge graph visualization with D3.js",
       viewDetails: "View Details"
+    },
+    audioWave: {
+      title: "Audio Visualization",
+      description: "Real-time audio waveform and spectrum analysis visualization",
+      startRecording: "Start Recording",
+      stopRecording: "Stop Recording",
+      micPermissionError: "Cannot access microphone, please ensure permission is granted",
+      viewDetails: "View Details",
+      controls: {
+        volume: "Volume",
+        smoothing: "Smoothing",
+        fftSize: "FFT Size",
+        theme: "Theme",
+      },
+      display: {
+        waveform: "Waveform",
+        spectrum: "Spectrum",
+        parameters: {
+          sampleRate: "Sample Rate",
+          fftSize: "FFT Size",
+          smoothing: "Smoothing",
+          volume: "Volume Gain"
+        }
+      }
     }
   }
 } as const; 

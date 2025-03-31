@@ -23,6 +23,11 @@ interface VisualizationContent {
     description: string;
     viewDetails: string;
   };
+  audioWave: {
+    title: string;
+    description: string;
+    viewDetails: string;
+  };
 }
 
 export default function VisualizationsPage() {
@@ -119,6 +124,18 @@ export default function VisualizationsPage() {
             className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
           >
             {content.knowledgeGraph.viewDetails}
+          </a>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-2">{content.audioWave.title}</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            {content.audioWave.description}
+          </p>
+          <a
+            href="/visualizations/audio-wave"
+            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+          >
+            {content.audioWave.viewDetails}
           </a>
         </div>
       </div>

@@ -457,25 +457,43 @@ export const zh = {
   visualizations: {
     title: "数据可视化",
     d3: {
-      title: "D3.js 示例",
-      description: "使用 D3.js 创建的交互式数据可视化示例，展示了各种图表类型和动画效果。",
+      title: "D3.js 可视化",
+      description: "使用 D3.js 创建交互式数据可视化",
       viewDetails: "查看详情"
     },
     helloworld: {
       title: "Hello World",
-      description: "一个简单的 Hello World 示例，展示了基本的数据可视化概念。",
-      viewDetails: "查看详情",
-      content: {
-        title: "SVG 交互示例",
-        clickMe: "点击我",
-        animating: "动画中...",
-        clicks: "点击次数: "
-      }
+      description: "简单的 Hello World 示例",
+      viewDetails: "查看详情"
     },
     knowledgeGraph: {
       title: "知识图谱",
-      description: "基于 Notion 数据库构建的交互式知识图谱，展示了概念之间的关联关系。",
+      description: "使用 D3.js 创建知识图谱可视化",
       viewDetails: "查看详情"
+    },
+    audioWave: {
+      title: "音频可视化",
+      description: "实时音频波形和频谱分析可视化",
+      startRecording: "开始录音",
+      stopRecording: "停止录音",
+      micPermissionError: "无法访问麦克风，请确保已授予权限",
+      viewDetails: "查看详情",
+      controls: {
+        volume: "音量",
+        smoothing: "平滑度",
+        fftSize: "FFT大小",
+        theme: "主题",
+      },
+      display: {
+        waveform: "波形",
+        spectrum: "频谱",
+        parameters: {
+          sampleRate: "采样率",
+          fftSize: "FFT大小",
+          smoothing: "平滑系数",
+          volume: "音量增益"
+        }
+      }
     }
   }
 } as const; 

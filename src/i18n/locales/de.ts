@@ -397,27 +397,45 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
     backHome: "Zurück zur Startseite"
   },
   visualizations: {
-    title: "Datenvisualisierungen",
+    title: "Datenvisualisierung",
     d3: {
-      title: "D3.js Beispiele",
-      description: "Interaktive Datenvisualisierungen erstellt mit D3.js, die verschiedene Diagrammtypen und Animationseffekte zeigen.",
+      title: "D3.js Visualisierung",
+      description: "Interaktive Datenvisualisierungen mit D3.js erstellen",
       viewDetails: "Details anzeigen"
     },
     helloworld: {
       title: "Hello World",
-      description: "Ein einfaches Hello World Beispiel, das grundlegende Konzepte der Datenvisualisierung demonstriert.",
-      viewDetails: "Details anzeigen",
-      content: {
-        title: "SVG Interaktion Beispiel",
-        clickMe: "Klicken Sie mich",
-        animating: "Animation...",
-        clicks: "Klickzähler: "
-      }
+      description: "Einfaches Hello World Beispiel",
+      viewDetails: "Details anzeigen"
     },
     knowledgeGraph: {
       title: "Wissensgraph",
-      description: "Ein interaktiver Wissensgraph basierend auf einer Notion-Datenbank, der Beziehungen zwischen Konzepten zeigt.",
+      description: "Wissensgraphvisualisierung mit D3.js erstellen",
       viewDetails: "Details anzeigen"
+    },
+    audioWave: {
+      title: "Audiovisualisierung",
+      description: "Echtzeit-Audiovisualisierung von Wellenform und Spektralanalyse",
+      startRecording: "Aufnahme starten",
+      stopRecording: "Aufnahme stoppen",
+      micPermissionError: "Mikrofon nicht zugänglich, bitte Zugriff erlauben",
+      viewDetails: "Details anzeigen",
+      controls: {
+        volume: "Lautstärke",
+        smoothing: "Glättung",
+        fftSize: "FFT-Größe",
+        theme: "Thema",
+      },
+      display: {
+        waveform: "Wellenform",
+        spectrum: "Spektrum",
+        parameters: {
+          sampleRate: "Abtastrate",
+          fftSize: "FFT-Größe",
+          smoothing: "Glättungsfaktor",
+          volume: "Lautstärkeverstärkung"
+        }
+      }
     }
   }
 } as const; 
