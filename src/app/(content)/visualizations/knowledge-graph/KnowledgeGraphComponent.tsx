@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
-import { Concept } from '../types';
-import { fetchConcepts } from '../notionService';
+import { Concept } from './types';
+import { fetchConcepts } from './notionService';
 import styles from './KnowledgeGraph.module.css';
 
 // 添加视图类型枚举
@@ -489,7 +489,7 @@ function KnowledgeGraphComponentInner() {
     return (
       <div className="p-4">
         <div className="border rounded-lg p-4 bg-white h-[600px] flex items-center justify-center">
-          <div className="text-gray-500">加载中...</div>
+          <div className="text-gray-500">Loading...</div>
         </div>
       </div>
     );
@@ -499,7 +499,7 @@ function KnowledgeGraphComponentInner() {
     return (
       <div className="p-4">
         <div className="border rounded-lg p-4 bg-white h-[600px] flex items-center justify-center">
-          <div className="text-red-500">加载失败: {error.message}</div>
+          <div className="text-red-500">Failed to load: {error.message}</div>
         </div>
       </div>
     );

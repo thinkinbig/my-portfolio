@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { createAudioAnalyzer, cleanupAudioAnalyzer, updateAudioData, type AudioAnalyzer } from '@/utils/audio';
 import { updateCanvasSize, drawWaveform, drawSpectrum } from '@/utils/visualizer';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from 'next-themes';
 
 interface AudioWaveVisualizerProps {
   startRecordingText: string;
@@ -48,7 +48,21 @@ export default function AudioWaveVisualizer({
   const FPS = 30;
   const frameInterval = 1000 / FPS;
 
-  const themeColors = {
+  // 添加 useEffect 来处理主题状态
+  useEffect(() => {
+    // 确保在客户端渲染时主题状态与服务器端一致
+    const root = document.documentElement;
+    if (colorTheme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    }
+  }, [colorTheme]);
+
+  // 使用 useMemo 优化 themeColors 对象
+  const themeColors = useMemo(() => ({
     blue: {
       waveform: colorTheme === 'dark' ? '#4F46E5' : '#3730A3',
       spectrum: colorTheme === 'dark' 
@@ -76,7 +90,7 @@ export default function AudioWaveVisualizer({
         ? 'from-emerald-500 to-emerald-600'
         : 'from-emerald-600 to-emerald-700',
     },
-  };
+  }), [colorTheme]);
 
   // 清理函数
   const cleanup = useCallback(() => {
@@ -146,7 +160,7 @@ export default function AudioWaveVisualizer({
     });
 
     animationFrameIdRef.current = requestAnimationFrame(drawVisualizations);
-  }, [volume, theme]);
+  }, [volume, theme, frameInterval, themeColors]);
 
   useEffect(() => {
     if (isRecording && audioAnalyzerRef.current) {

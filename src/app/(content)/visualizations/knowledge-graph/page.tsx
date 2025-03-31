@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 // 动态导入组件以避免 SSR 问题
 const KnowledgeGraphComponent = dynamic(
-  () => import('./component/KnowledgeGraphComponent'),
+  () => import('./KnowledgeGraphComponent'),
   {
     ssr: false,
     loading: () => (

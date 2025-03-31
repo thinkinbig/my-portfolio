@@ -3,38 +3,33 @@
 import { useEffect, useState } from 'react';
 import { getI18nText } from '@/i18n';
 import { useLanguage } from '@/contexts/LanguageContext';
-import AudioWaveVisualizer from './AudioWaveVisualizer';
+import GuitarTuner from './GuitarTuner';
 
-interface AudioWaveContent {
+interface GuitarTunerContent {
   startRecording: string;
   stopRecording: string;
   micPermissionError: string;
-  controls: {
-    volume: string;
-    smoothing: string;
-    fftSize: string;
-    theme: string;
-  };
-  display: {
-    waveform: string;
-    spectrum: string;
-    parameters: {
-      sampleRate: string;
-      fftSize: string;
-      smoothing: string;
-      volume: string;
-    };
+  strings: Array<{
+    note: string;
+    frequency: number;
+    name: string;
+  }>;
+  tuner: {
+    perfect: string;
+    tooHigh: string;
+    tooLow: string;
+    cents: string;
   };
 }
 
-export default function AudioWavePage() {
+export default function GuitarTunerPage() {
   const { language } = useLanguage();
-  const [content, setContent] = useState<AudioWaveContent | null>(null);
+  const [content, setContent] = useState<GuitarTunerContent | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
-      const i18nContent = getI18nText(language, 'visualizations.audioWave') as AudioWaveContent;
+      const i18nContent = getI18nText(language, 'visualizations.guitarTuner') as GuitarTunerContent;
       if (!i18nContent) {
         throw new Error('没有找到内容');
       }
@@ -55,12 +50,12 @@ export default function AudioWavePage() {
 
   return (
     <div>
-      <AudioWaveVisualizer
+      <GuitarTuner
         startRecordingText={content.startRecording}
         stopRecordingText={content.stopRecording}
         micPermissionErrorText={content.micPermissionError}
-        controls={content.controls}
-        display={content.display}
+        strings={content.strings}
+        tuner={content.tuner}
       />
     </div>
   );

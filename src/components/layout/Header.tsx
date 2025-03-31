@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from 'next-themes';
 import { getI18nText } from '@/i18n';
 import type { Language } from '@/i18n';
 import Link from 'next/link';
@@ -10,14 +10,18 @@ import { Logo } from '@/components/icons/Logo';
 
 const languages: Record<Language, string> = {
   en: 'English',
-  de: 'Deutsch',
-  zh: '中文'
+  zh: '中文',
+  de: 'Deutsch'
 } as const;
 
 export function Header() {
   const { language, setLanguage } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-b border-foreground/10 z-50">
