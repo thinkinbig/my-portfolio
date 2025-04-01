@@ -79,7 +79,7 @@ export default function GuitarTuner({
   strings: propStrings = [],
   tuner,
 }: GuitarTunerProps) {
-  const { theme: colorTheme } = useTheme();
+  const { theme: colorTheme, setTheme } = useTheme();
   const [isRecording, setIsRecording] = useState(false);
   const audioAnalyzerRef = useRef<AudioAnalyzer | null>(null);
   const animationFrameIdRef = useRef<number | null>(null);
@@ -93,6 +93,13 @@ export default function GuitarTuner({
   const freqHistoryRef = useRef<number[]>([]);
   const lastValidFreqRef = useRef<number | null>(null);
   const stableCountRef = useRef<number>(0);
+
+  // 设置默认主题为黑色
+  useEffect(() => {
+    if (!colorTheme) {
+      setTheme('dark');
+    }
+  }, [colorTheme, setTheme]);
 
   // 合并 props 和默认值，确保使用 STANDARD_TUNING 中的 audioUrl
   const strings = useMemo(() => {
