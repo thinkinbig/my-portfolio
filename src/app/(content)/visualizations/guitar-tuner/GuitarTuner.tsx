@@ -5,11 +5,31 @@ import { createAudioAnalyzer, cleanupAudioAnalyzer, updateAudioData, type AudioA
 import { useTheme } from 'next-themes';
 import * as d3 from 'd3';
 
+// 标准调音频率
+const STANDARD_TUNING = [
+  { note: 'E4', frequency: 329.63, name: '1st' },
+  { note: 'B3', frequency: 246.94, name: '2nd' },
+  { note: 'G3', frequency: 196.00, name: '3rd' },
+  { note: 'D3', frequency: 146.83, name: '4th' },
+  { note: 'A2', frequency: 110.00, name: '5th' },
+  { note: 'E2', frequency: 82.41, name: '6th' },
+];
+
+// 降调频率
+const DROP_D_TUNING = [
+  { note: 'E4', frequency: 329.63, name: '1st' },
+  { note: 'B3', frequency: 246.94, name: '2nd' },
+  { note: 'G3', frequency: 196.00, name: '3rd' },
+  { note: 'D3', frequency: 146.83, name: '4th' },
+  { note: 'A2', frequency: 110.00, name: '5th' },
+  { note: 'D2', frequency: 73.42, name: '6th' },
+];
+
 interface GuitarTunerProps {
   startRecordingText: string;
   stopRecordingText: string;
   micPermissionErrorText: string;
-  strings: Array<{
+  strings?: Array<{
     note: string;
     frequency: number;
     name: string;
@@ -26,7 +46,7 @@ export default function GuitarTuner({
   startRecordingText,
   stopRecordingText,
   micPermissionErrorText,
-  strings,
+  strings = STANDARD_TUNING, // 默认使用标准调音
   tuner,
 }: GuitarTunerProps) {
   const { theme: colorTheme } = useTheme();
