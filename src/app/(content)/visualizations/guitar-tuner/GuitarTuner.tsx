@@ -1,28 +1,57 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { createAudioAnalyzer, cleanupAudioAnalyzer, updateAudioData, type AudioAnalyzer } from '@/utils/audio';
+import { 
+  createAudioAnalyzer, 
+  cleanupAudioAnalyzer, 
+  updateAudioData, 
+  type AudioAnalyzer,
+} from '@/utils/audio';
+import { findFundamentalFrequency, medianFilter, calculateCents, findClosestNote } from '@/utils/audio/frequency';
 import { useTheme } from 'next-themes';
-import * as d3 from 'd3';
+import TunerDisplay from './components/TunerDisplay';
+import GuitarStrings from './components/GuitarStrings';
+import QuickReference from './components/QuickReference';
+import { getThemeColors } from './styles/theme';
 
-// 标准调音频率
+// 标准调音频率（从低音到高音）
 const STANDARD_TUNING = [
-  { note: 'E4', frequency: 329.63, name: '1st' },
-  { note: 'B3', frequency: 246.94, name: '2nd' },
-  { note: 'G3', frequency: 196.00, name: '3rd' },
-  { note: 'D3', frequency: 146.83, name: '4th' },
-  { note: 'A2', frequency: 110.00, name: '5th' },
-  { note: 'E2', frequency: 82.41, name: '6th' },
-];
-
-// 降调频率
-const DROP_D_TUNING = [
-  { note: 'E4', frequency: 329.63, name: '1st' },
-  { note: 'B3', frequency: 246.94, name: '2nd' },
-  { note: 'G3', frequency: 196.00, name: '3rd' },
-  { note: 'D3', frequency: 146.83, name: '4th' },
-  { note: 'A2', frequency: 110.00, name: '5th' },
-  { note: 'D2', frequency: 73.42, name: '6th' },
+  { 
+    note: 'E2', 
+    frequency: 82.41, 
+    name: '6th',
+    audioUrl: '/sounds/guitar/e2.mp3'
+  },
+  { 
+    note: 'A2', 
+    frequency: 110.00, 
+    name: '5th',
+    audioUrl: '/sounds/guitar/a2.mp3'
+  },
+  { 
+    note: 'D3', 
+    frequency: 146.83, 
+    name: '4th',
+    audioUrl: '/sounds/guitar/d3.mp3'
+  },
+  { 
+    note: 'G3', 
+    frequency: 196.00, 
+    name: '3rd',
+    audioUrl: '/sounds/guitar/g3.mp3'
+  },
+  { 
+    note: 'B3', 
+    frequency: 246.94, 
+    name: '2nd',
+    audioUrl: '/sounds/guitar/b3.mp3'
+  },
+  { 
+    note: 'E4', 
+    frequency: 329.63, 
+    name: '1st',
+    audioUrl: '/sounds/guitar/e4.mp3'
+  },
 ];
 
 interface GuitarTunerProps {
@@ -33,6 +62,7 @@ interface GuitarTunerProps {
     note: string;
     frequency: number;
     name: string;
+    audioUrl?: string;
   }>;
   tuner: {
     perfect: string;
@@ -46,7 +76,7 @@ export default function GuitarTuner({
   startRecordingText,
   stopRecordingText,
   micPermissionErrorText,
-  strings = STANDARD_TUNING, // 默认使用标准调音
+  strings: propStrings = [],
   tuner,
 }: GuitarTunerProps) {
   const { theme: colorTheme } = useTheme();
@@ -57,127 +87,195 @@ export default function GuitarTuner({
   const [currentNote, setCurrentNote] = useState<string | null>(null);
   const [cents, setCents] = useState<number>(0);
   const [status, setStatus] = useState<string>('');
-  const svgRef = useRef<SVGSVGElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioCache = useRef(new Map<string, HTMLAudioElement>());
+  const freqHistoryRef = useRef<number[]>([]);
+  const lastValidFreqRef = useRef<number | null>(null);
+  const stableCountRef = useRef<number>(0);
+
+  // 合并 props 和默认值，确保使用 STANDARD_TUNING 中的 audioUrl
+  const strings = useMemo(() => {
+    return propStrings.map((string, index) => ({
+      ...string,
+      audioUrl: string.audioUrl || STANDARD_TUNING[index].audioUrl
+    }));
+  }, [propStrings]);
 
   // 使用 useMemo 优化主题颜色
-  const themeColors = useMemo(() => ({
-    background: colorTheme === 'dark' 
-      ? 'from-gray-900 via-gray-800 to-gray-900' 
-      : 'from-gray-50 via-gray-100 to-gray-50',
-    text: {
-      primary: colorTheme === 'dark' ? 'text-white' : 'text-gray-900',
-      secondary: colorTheme === 'dark' ? 'text-gray-400' : 'text-gray-600',
-      accent: colorTheme === 'dark' ? 'text-green-500' : 'text-green-600',
-      error: colorTheme === 'dark' ? 'text-red-500' : 'text-red-600',
-    },
-    border: colorTheme === 'dark' 
-      ? 'border-zinc-800/50' 
-      : 'border-gray-200/50',
-    card: {
-      background: colorTheme === 'dark' 
-        ? 'bg-zinc-900/90' 
-        : 'bg-white/90',
-      border: colorTheme === 'dark' 
-        ? 'border-zinc-800/50' 
-        : 'border-gray-200/50',
-    },
-    display: {
-      background: colorTheme === 'dark' 
-        ? 'bg-black/80' 
-        : 'bg-gray-900/80',
-      border: colorTheme === 'dark' 
-        ? 'border-zinc-800/50' 
-        : 'border-gray-700/50',
-    },
-    string: {
-      active: colorTheme === 'dark' 
-        ? 'from-green-500/20 via-green-500 to-green-500/20' 
-        : 'from-green-600/20 via-green-600 to-green-600/20',
-      inactive: colorTheme === 'dark' 
-        ? 'from-zinc-700/20 via-zinc-400 to-zinc-700/20' 
-        : 'from-gray-400/20 via-gray-500 to-gray-400/20',
-    },
-  }), [colorTheme]);
+  const themeColors = useMemo(() => getThemeColors(colorTheme), [colorTheme]);
 
-  // 播放标准音
-  const playReferenceNote = useCallback((frequency: number) => {
-    // 如果已经在播放，先停止
-    if (oscillatorRef.current) {
-      oscillatorRef.current.stop();
-      oscillatorRef.current.disconnect();
-      oscillatorRef.current = null;
+  // 预加载音频文件
+  const preloadAudio = useCallback(async (audioUrl: string): Promise<HTMLAudioElement | null> => {
+    try {
+      console.log('开始预加载音频:', audioUrl);
+      
+      if (!audioUrl) {
+        console.error('音频URL为空');
+        return null;
+      }
+
+      // 检查缓存
+      if (audioCache.current.has(audioUrl)) {
+        console.log('使用缓存的音频:', audioUrl);
+        return audioCache.current.get(audioUrl) || null;
+      }
+
+      // 创建音频元素
+      const audio = new Audio();
+      audio.preload = 'auto';
+      console.log('创建新的音频元素:', audioUrl);
+      
+      // 设置音频源
+      console.log('设置音频源:', audioUrl);
+      audio.src = audioUrl;
+      
+      // 等待音频加载完成
+      await new Promise<void>((resolve, reject) => {
+        const handleCanPlayThrough = () => {
+          console.log('音频可以播放:', audioUrl);
+          resolve();
+        };
+
+        const handleError = (e: ErrorEvent) => {
+          console.error('音频加载错误:', audioUrl, e);
+          reject(new Error(`加载音频失败: ${audioUrl}`));
+        };
+
+        audio.addEventListener('canplaythrough', handleCanPlayThrough);
+        audio.addEventListener('error', handleError as EventListener);
+      });
+      
+      console.log('音频加载完成:', audioUrl);
+      
+      // 存入缓存
+      audioCache.current.set(audioUrl, audio);
+      return audio;
+    } catch (error) {
+      console.error('预加载音频失败:', audioUrl, error);
+      return null;
     }
-
-    // 创建或获取 AudioContext
-    if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext();
-    }
-
-    const audioContext = audioContextRef.current;
-
-    // 创建音频节点
-    const mainOscillator = audioContext.createOscillator();
-    const harmonicOscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    const harmonicGain = audioContext.createGain();
-    const filter = audioContext.createBiquadFilter();
-
-    // 设置主音色参数
-    mainOscillator.type = 'triangle';  // 使用三角波作为基础
-    mainOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-
-    // 设置泛音参数
-    harmonicOscillator.type = 'sine';
-    harmonicOscillator.frequency.setValueAtTime(frequency * 2, audioContext.currentTime); // 添加八度泛音
-
-    // 设置滤波器
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(2000, audioContext.currentTime);
-    filter.Q.setValueAtTime(1, audioContext.currentTime);
-
-    // 设置音量包络
-    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.02);  // 快速起音
-    gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.5);  // 衰减
-    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2);  // 渐出
-
-    // 设置泛音音量
-    harmonicGain.gain.setValueAtTime(0, audioContext.currentTime);
-    harmonicGain.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.02);
-    harmonicGain.gain.exponentialRampToValueAtTime(0.03, audioContext.currentTime + 0.3);
-    harmonicGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
-
-    // 连接音频节点
-    mainOscillator.connect(filter);
-    harmonicOscillator.connect(harmonicGain);
-    harmonicGain.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    // 保存引用
-    oscillatorRef.current = mainOscillator;
-    gainNodeRef.current = gainNode;
-
-    // 开始播放
-    mainOscillator.start();
-    harmonicOscillator.start();
-
-    // 2秒后自动停止
-    setTimeout(() => {
-      mainOscillator.stop();
-      harmonicOscillator.stop();
-      mainOscillator.disconnect();
-      harmonicOscillator.disconnect();
-      harmonicGain.disconnect();
-      filter.disconnect();
-      gainNode.disconnect();
-      oscillatorRef.current = null;
-      gainNodeRef.current = null;
-    }, 2000);
   }, []);
+
+  // 播放音频
+  const playAudio = useCallback(async (audioUrl: string): Promise<void> => {
+    try {
+      console.log('尝试播放音频:', audioUrl);
+
+      if (!audioUrl) {
+        console.error('未提供音频URL');
+        return;
+      }
+
+      // 从缓存获取或加载音频
+      let audio: HTMLAudioElement | undefined = audioCache.current.get(audioUrl);
+      if (!audio) {
+        console.log('音频未缓存，开始加载:', audioUrl);
+        const loadedAudio = await preloadAudio(audioUrl);
+        if (loadedAudio) {
+          audio = loadedAudio;
+          console.log('音频加载成功:', audioUrl);
+        }
+      } else {
+        console.log('使用缓存的音频:', audioUrl);
+      }
+
+      if (!audio) {
+        console.error('无法加载音频:', audioUrl);
+        return;
+      }
+
+      // 重置音频
+      audio.currentTime = 0;
+      console.log('重置音频位置:', audioUrl);
+      
+      // 使用 Promise 包装音频播放
+      const playPromise = new Promise<void>((resolve, reject) => {
+        const handleEnded = () => {
+          console.log('音频播放结束:', audioUrl);
+          resolve();
+        };
+
+        const handleError = (e: ErrorEvent) => {
+          console.error('播放音频错误:', audioUrl, e);
+          reject(new Error(`播放音频失败: ${audioUrl}`));
+        };
+
+        const handlePlay = () => {
+          console.log('音频开始播放:', audioUrl);
+        };
+
+        audio.addEventListener('play', handlePlay);
+        audio.addEventListener('ended', handleEnded);
+        audio.addEventListener('error', handleError as EventListener);
+      });
+
+      // 尝试播放
+      try {
+        console.log('开始播放音频:', audioUrl);
+        await audio.play();
+        await playPromise;
+      } catch (error) {
+        console.error('播放失败，等待用户交互:', audioUrl, error);
+        // 尝试用户交互后播放
+        const playOnInteraction = async () => {
+          try {
+            console.log('用户交互后重新尝试播放:', audioUrl);
+            await audio.play();
+            await playPromise;
+          } catch (e) {
+            console.error('用户交互后播放失败:', audioUrl, e);
+          }
+        };
+        
+        document.addEventListener('click', playOnInteraction, { once: true });
+      }
+    } catch (error) {
+      console.error('播放音频过程中出错:', audioUrl, error);
+    }
+  }, [preloadAudio]);
+
+  // 预加载所有音频文件
+  useEffect(() => {
+    const loadAllAudio = async () => {
+      try {
+        console.log('开始预加载所有音频文件');
+        console.log('当前 strings 数组:', strings);
+        
+        const validStrings = strings.filter(string => {
+          const isValid = string.audioUrl && string.audioUrl.trim() !== '';
+          console.log(`检查音频URL: ${string.note} - ${string.audioUrl} - ${isValid ? '有效' : '无效'}`);
+          return isValid;
+        });
+
+        if (validStrings.length === 0) {
+          console.warn('没有找到有效的音频URL');
+          return;
+        }
+
+        const loadPromises = validStrings.map(string => {
+          console.log('开始预加载音频:', string.note, string.audioUrl);
+          return preloadAudio(string.audioUrl!);
+        });
+        
+        await Promise.all(loadPromises);
+        console.log('所有音频文件预加载完成');
+      } catch (error) {
+        console.error('音频预加载失败:', error);
+      }
+    };
+
+    loadAllAudio();
+  }, [strings, preloadAudio]);
+
+  // 修改播放标准音的函数
+  const playReferenceNote = useCallback(async (audioUrl?: string) => {
+    if (!audioUrl) {
+      console.error('未提供音频URL');
+      return;
+    }
+    await playAudio(audioUrl);
+  }, [playAudio]);
 
   // 清理函数
   const cleanup = useCallback(() => {
@@ -193,10 +291,6 @@ export default function GuitarTuner({
       oscillatorRef.current.stop();
       oscillatorRef.current.disconnect();
       oscillatorRef.current = null;
-    }
-    if (gainNodeRef.current) {
-      gainNodeRef.current.disconnect();
-      gainNodeRef.current = null;
     }
   }, []);
 
@@ -225,63 +319,63 @@ export default function GuitarTuner({
     setIsRecording(false);
   };
 
-  // 计算最接近的音符
-  const findClosestNote = useCallback((frequency: number) => {
-    let closestNote = strings[0];
-    let minDiff = Math.abs(frequency - strings[0].frequency);
-    
-    strings.forEach(string => {
-      const diff = Math.abs(frequency - string.frequency);
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestNote = string;
-      }
-    });
-
-    return closestNote;
-  }, [strings]);
-
-  // 计算音分差
-  const calculateCents = useCallback((frequency: number, targetFrequency: number) => {
-    return 1200 * Math.log2(frequency / targetFrequency);
-  }, []);
-
   const updateTuner = useCallback(() => {
     if (!audioAnalyzerRef.current) return;
 
     updateAudioData(audioAnalyzerRef.current);
-    const freqData = audioAnalyzerRef.current.freqData;
+    const timeData = new Float32Array(audioAnalyzerRef.current.analyzer.fftSize);
+    audioAnalyzerRef.current.analyzer.getFloatTimeDomainData(timeData);
     
-    // 找到最强的频率
-    let maxAmplitude = 0;
-    let dominantFrequency = 0;
-    
-    for (let i = 0; i < freqData.length; i++) {
-      if (freqData[i] > maxAmplitude) {
-        maxAmplitude = freqData[i];
-        dominantFrequency = i * (audioAnalyzerRef.current.context.sampleRate / audioAnalyzerRef.current.analyzer.fftSize);
+    // 使用 YIN 算法检测频率
+    const freq = findFundamentalFrequency(
+      timeData,
+      audioAnalyzerRef.current.context.sampleRate
+    );
+
+    if (freq > 0) {
+      // 更新频率历史
+      freqHistoryRef.current.push(freq);
+      if (freqHistoryRef.current.length > 10) { // 增加历史记录长度
+        freqHistoryRef.current.shift();
       }
-    }
 
-    if (dominantFrequency > 0) {
-      setCurrentFrequency(dominantFrequency);
-      const closestNote = findClosestNote(dominantFrequency);
-      setCurrentNote(closestNote.note);
-      const centsDiff = calculateCents(dominantFrequency, closestNote.frequency);
-      setCents(centsDiff);
+      // 应用中值滤波，使用更大的窗口
+      const filteredFreq = medianFilter(freqHistoryRef.current, 5)[0];
+      
+      if (filteredFreq) {
+        // 检查频率稳定性
+        const freqDiff = lastValidFreqRef.current ? Math.abs(filteredFreq - lastValidFreqRef.current) : Infinity;
+        
+        if (freqDiff < 1.0) { // 如果频率变化小于1Hz
+          stableCountRef.current++;
+        } else {
+          stableCountRef.current = 0;
+        }
 
-      // 设置状态
-      if (Math.abs(centsDiff) < 5) {
-        setStatus(tuner.perfect);
-      } else if (centsDiff > 0) {
-        setStatus(tuner.tooHigh);
-      } else {
-        setStatus(tuner.tooLow);
+        // 只有当频率足够稳定时才更新显示
+        if (stableCountRef.current >= 3) {
+          setCurrentFrequency(filteredFreq);
+          const closestNote = findClosestNote(filteredFreq, strings);
+          setCurrentNote(closestNote.note);
+          const centsDiff = calculateCents(filteredFreq, closestNote.frequency);
+          setCents(centsDiff);
+
+          // 设置状态
+          if (Math.abs(centsDiff) < 5) {
+            setStatus(tuner.perfect);
+          } else if (centsDiff > 0) {
+            setStatus(tuner.tooHigh);
+          } else {
+            setStatus(tuner.tooLow);
+          }
+        }
+
+        lastValidFreqRef.current = filteredFreq;
       }
     }
 
     animationFrameIdRef.current = requestAnimationFrame(updateTuner);
-  }, [tuner, findClosestNote, calculateCents]);
+  }, [strings, tuner]);
 
   useEffect(() => {
     if (isRecording && audioAnalyzerRef.current) {
@@ -289,137 +383,37 @@ export default function GuitarTuner({
     }
   }, [isRecording, updateTuner]);
 
-  // 更新LED位置 - 优化动画效果
+  // 在组件挂载时初始化音频上下文
   useEffect(() => {
-    if (!svgRef.current) return;
+    const initAudioContext = async () => {
+      try {
+        if (!audioContextRef.current) {
+          // 使用类型断言先转换为 unknown，然后再转换为目标类型
+          const webkitAudioContext = (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+          const AudioContextClass = window.AudioContext || webkitAudioContext;
+          
+          if (!AudioContextClass) {
+            throw new Error('不支持 Web Audio API');
+          }
+          
+          audioContextRef.current = new AudioContextClass();
+          await audioContextRef.current.resume();
+          console.log('音频上下文初始化成功');
+        }
+      } catch (error) {
+        console.error('初始化音频上下文失败:', error);
+      }
+    };
 
-    const width = svgRef.current.clientWidth;
-    const margin = { left: 30, right: 30 };
-    
-    // 缩小移动范围
-    const xScale = d3.scaleLinear()
-      .domain([-50, 50])
-      .range([margin.left, width - margin.right]);
+    initAudioContext();
 
-    // 限制移动范围
-    const clampedCents = Math.max(-50, Math.min(50, cents));
-    
-    // 使用easeOut缓动效果，减少动画时间
-    d3.select(svgRef.current)
-      .select('.active-led-group')
-      .transition()
-      .duration(50)
-      .ease(d3.easeQuad)
-      .attr('transform', `translate(${xScale(clampedCents)}, ${svgRef.current.clientHeight/2})`);
-
-    // 更新LED颜色和亮度
-    const isPerfect = Math.abs(clampedCents) < 5;
-    d3.select(svgRef.current)
-      .selectAll('.active-led-group circle')
-      .transition()
-      .duration(50)
-      .attr('fill', isPerfect ? '#22C55E' : '#EF4444')
-      .style('opacity', isPerfect ? 1 : 0.8);
-
-  }, [cents]);
-
-  // 初始化D3
-  useEffect(() => {
-    if (!svgRef.current) return;
-
-    const width = svgRef.current.clientWidth;
-    const height = svgRef.current.clientHeight;
-    const margin = { top: 10, right: 30, bottom: 10, left: 30 };
-
-    // 创建SVG
-    const svg = d3.select(svgRef.current)
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .attr('viewBox', `0 0 ${width} ${height}`);
-
-    // 清除已有内容
-    svg.selectAll('*').remove();
-
-    // 创建比例尺
-    const xScale = d3.scaleLinear()
-      .domain([-50, 50])
-      .range([margin.left, width - margin.right]);
-
-    // 添加发光效果滤镜
-    const defs = svg.append('defs');
-    
-    // 暗光效果
-    const darkGlow = defs.append('filter')
-      .attr('id', 'darkGlow')
-      .attr('x', '-50%')
-      .attr('y', '-50%')
-      .attr('width', '200%')
-      .attr('height', '200%');
-
-    darkGlow.append('feGaussianBlur')
-      .attr('stdDeviation', '2')
-      .attr('result', 'coloredBlur');
-
-    const darkMerge = darkGlow.append('feMerge');
-    darkMerge.append('feMergeNode')
-      .attr('in', 'coloredBlur');
-    darkMerge.append('feMergeNode')
-      .attr('in', 'SourceGraphic');
-
-    // 亮光效果
-    const brightGlow = defs.append('filter')
-      .attr('id', 'brightGlow')
-      .attr('x', '-50%')
-      .attr('y', '-50%')
-      .attr('width', '200%')
-      .attr('height', '200%');
-
-    brightGlow.append('feGaussianBlur')
-      .attr('stdDeviation', '3')
-      .attr('result', 'coloredBlur');
-
-    const brightMerge = brightGlow.append('feMerge');
-    brightMerge.append('feMergeNode')
-      .attr('in', 'coloredBlur');
-    brightMerge.append('feMergeNode')
-      .attr('in', 'SourceGraphic');
-
-    // 创建LED点阵
-    const ledPoints = d3.range(-50, 51, 5);
-    
-    // 添加背景LED点（暗色）
-    svg.selectAll('.led-point-bg')
-      .data(ledPoints)
-      .enter()
-      .append('circle')
-      .attr('class', 'led-point-bg')
-      .attr('cx', d => xScale(d))
-      .attr('cy', height/2)
-      .attr('r', 2.5)
-      .attr('fill', d => d === 0 ? '#FFFFFF' : '#4B5563')
-      .attr('opacity', d => d === 0 ? 0.8 : 0.4)
-      .attr('filter', 'url(#darkGlow)');
-
-    // 创建激活的LED点组
-    const activeLedGroup = svg.append('g')
-      .attr('class', 'active-led-group')
-      .attr('transform', `translate(${xScale(0)}, ${height/2})`);
-
-    // 添加激活的LED点
-    const activeLedRadius = 3;
-    const ledSpacing = 6;
-    
-    [-1, 0, 1].forEach((offset, i) => {
-      activeLedGroup.append('circle')
-        .attr('class', `active-led-${i}`)
-        .attr('cx', offset * ledSpacing)
-        .attr('cy', 0)
-        .attr('r', activeLedRadius)
-        .attr('fill', '#EF4444')
-        .attr('opacity', 0.9)
-        .attr('filter', 'url(#brightGlow)');
-    });
-
+    return () => {
+      // 清理音频上下文
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    };
   }, []);
 
   return (
@@ -525,105 +519,32 @@ export default function GuitarTuner({
           {/* 右侧调音显示和吉他弦 */}
           <div className="space-y-8">
             {/* 调音仪表盘 */}
-            <div className={`${themeColors.card.background} p-6 rounded-xl border ${themeColors.card.border} shadow-lg backdrop-blur-sm
-              before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50`}>
-              <div className="flex justify-between items-center mb-4">
-                <div className={`${themeColors.text.secondary} text-sm font-mono tracking-wider`}>TUNER DISPLAY</div>
-                <div className={`text-sm ${themeColors.text.secondary} font-mono`}>{status || '--'}</div>
-              </div>
-              
-              {/* 表盘显示区 */}
-              <div className={`relative h-24 ${themeColors.display.background} rounded-lg border ${themeColors.display.border} overflow-hidden`}>
-                <div className="absolute inset-0">
-                  <svg ref={svgRef} className="w-full h-full" style={{ background: 'transparent' }} />
-                </div>
-              </div>
-            </div>
+            <TunerDisplay
+              cents={cents}
+              status={status}
+              colorTheme={colorTheme || 'light'}
+              themeColors={themeColors}
+            />
 
-            {/* 吉他弦模型 */}
-            <div className={`${themeColors.card.background} p-6 rounded-xl border ${themeColors.card.border} shadow-lg backdrop-blur-sm
-              before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50`}>
-              <div className="flex justify-between items-center mb-4">
-                <div className={`${themeColors.text.secondary} text-sm font-mono tracking-wider`}>GUITAR STRINGS</div>
-                <div className={`text-xs ${themeColors.text.secondary} font-mono`}>Standard Tuning</div>
-              </div>
-
-              {/* 吉他弦区域 - 使用网格布局 */}
-              <div className="grid grid-cols-2 gap-4">
-                {strings.slice().reverse().map((string, index) => (
-                  <div key={index} className="relative">
-                    {/* 弦的容器 */}
-                    <div className={`relative h-12 ${themeColors.display.background} rounded-lg border ${themeColors.display.border} overflow-hidden`}>
-                      {/* 弦的视觉效果 */}
-                      <div className={`absolute left-0 right-0 h-[2px] top-1/2 -translate-y-1/2
-                        ${currentNote === string.note
-                          ? `bg-gradient-to-r ${themeColors.string.active} animate-pulse`
-                          : `bg-gradient-to-r ${themeColors.string.inactive}`}`}
-                      />
-
-                      {/* 音符和频率信息 */}
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center space-x-4">
-                        <div className={`text-lg font-bold ${
-                          currentNote === string.note ? themeColors.text.accent : themeColors.text.secondary
-                        }`}>
-                          {string.note}
-                        </div>
-                        <div className={`text-xs font-mono ${themeColors.text.secondary}`}>
-                          {string.frequency.toFixed(1)} Hz
-                        </div>
-                      </div>
-
-                      {/* 播放标准音按钮 */}
-                      <button
-                        className={`absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full
-                          ${colorTheme === 'dark' ? 'bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600' : 'bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-500'}
-                          flex items-center justify-center transition-colors`}
-                        onClick={() => playReferenceNote(string.frequency)}
-                      >
-                        <div className={`w-0 h-0 border-t-[6px] border-t-transparent
-                          border-l-[10px] ${colorTheme === 'dark' ? 'border-l-zinc-400 hover:border-l-zinc-300' : 'border-l-zinc-300 hover:border-l-zinc-200'}
-                          border-b-[6px] border-b-transparent ml-1`} />
-                      </button>
-                    </div>
-
-                    {/* 音准指示器 */}
-                    {currentNote === string.note && (
-                      <div className="absolute -right-2 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                        <div className="text-xs font-mono">
-                          <span className={`${Math.abs(cents) < 5 ? themeColors.text.accent : themeColors.text.error}`}>
-                            {cents > 0 ? '+' : ''}{cents.toFixed(1)}¢
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* 吉他弦显示 */}
+            <GuitarStrings
+              strings={strings}
+              currentNote={currentNote}
+              cents={cents}
+              colorTheme={colorTheme || 'light'}
+              themeColors={themeColors}
+              onPlayNote={playReferenceNote}
+            />
 
             {/* 快速参考显示 */}
-            <div className={`${themeColors.display.background} p-4 rounded-lg backdrop-blur-sm border ${themeColors.display.border} shadow-lg shadow-black/30
-              before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50`}>
-              <div className="grid grid-cols-6 gap-2">
-                {strings.map((string, index) => (
-                  <div
-                    key={index}
-                    className={`text-center p-2 rounded ${
-                      currentNote === string.note
-                        ? 'bg-green-500/20 text-green-500'
-                        : themeColors.text.secondary
-                    }`}
-                  >
-                    <div className={`text-xs font-mono ${themeColors.text.secondary}`}>{string.name}</div>
-                    <div className={`text-sm font-bold ${themeColors.text.primary}`}>{string.note}</div>
-                    <div className={`text-xs font-mono ${themeColors.text.secondary}`}>{string.frequency.toFixed(1)}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <QuickReference
+              strings={strings}
+              currentNote={currentNote}
+              themeColors={themeColors}
+            />
           </div>
         </div>
       </div>
     </div>
   );
-}
+} 

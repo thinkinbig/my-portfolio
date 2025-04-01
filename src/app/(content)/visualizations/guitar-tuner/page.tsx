@@ -13,6 +13,7 @@ interface GuitarTunerContent {
     note: string;
     frequency: number;
     name: string;
+    audioUrl?: string;
   }>;
   tuner: {
     perfect: string;
