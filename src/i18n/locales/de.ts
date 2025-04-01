@@ -1,7 +1,11 @@
 export const de = {
   header: {
     name: "Zeyu Li",
-    title: "Portfolio"
+    title: "Portfolio",
+    navigation: {
+      visualizations: "Datenvisualisierung",
+      blog: "Blog"
+    }
   },
   hero: {
     title: "Zeyu Li",
@@ -391,5 +395,74 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
     title: "Seite nicht gefunden",
     description: "Die gesuchte Seite existiert nicht oder wurde verschoben.",
     backHome: "Zurück zur Startseite"
+  },
+  visualizations: {
+    title: "Datenvisualisierung",
+    d3: {
+      title: "D3.js Visualisierung",
+      description: "Interaktive Datenvisualisierungen mit D3.js erstellen",
+      viewDetails: "Details anzeigen"
+    },
+    helloworld: {
+      title: "Hello World",
+      description: "Einfaches Hello World Beispiel",
+      viewDetails: "Details anzeigen",
+      content: {
+        title: "Hello World Visualisierung",
+        clickMe: "Klick mich!",
+        animating: "Animiert...",
+        clicks: "Klicks: "
+      }
+    },
+    knowledgeGraph: {
+      title: "Wissensgraph",
+      description: "Wissensgraphvisualisierung mit D3.js erstellen",
+      viewDetails: "Details anzeigen"
+    },
+    audioWave: {
+      title: "Audiovisualisierung",
+      description: "Echtzeit-Audiovisualisierung von Wellenform und Spektralanalyse",
+      startRecording: "Aufnahme starten",
+      stopRecording: "Aufnahme stoppen",
+      micPermissionError: "Mikrofon nicht zugänglich, bitte Zugriff erlauben",
+      viewDetails: "Details anzeigen",
+      controls: {
+        volume: "Lautstärke",
+        smoothing: "Glättung",
+        fftSize: "FFT-Größe",
+        theme: "Thema",
+      },
+      display: {
+        waveform: "Wellenform",
+        spectrum: "Spektrum",
+        parameters: {
+          sampleRate: "Abtastrate",
+          fftSize: "FFT-Größe",
+          smoothing: "Glättungsfaktor",
+          volume: "Lautstärkeverstärkung"
+        }
+      }
+    },
+    guitarTuner: {
+      title: "Gitarrenstimmer",
+      description: "Echtzeit-Gitarrenstimmer mit Standardstimmung",
+      startRecording: "Stimmung starten",
+      stopRecording: "Stimmung stoppen",
+      micPermissionError: "Kein Zugriff auf das Mikrofon möglich. Bitte Berechtigung erteilen",
+      strings: [
+        { note: "E2", frequency: 82.41, name: "6. Saite" },
+        { note: "A2", frequency: 110.00, name: "5. Saite" },
+        { note: "D3", frequency: 146.83, name: "4. Saite" },
+        { note: "G3", frequency: 196.00, name: "3. Saite" },
+        { note: "B3", frequency: 246.94, name: "2. Saite" },
+        { note: "E4", frequency: 329.63, name: "1. Saite" }
+      ],
+      tuner: {
+        perfect: "Perfekt",
+        tooHigh: "Zu hoch",
+        tooLow: "Zu tief",
+        cents: "Cent"
+      }
+    }
   }
 } as const; 

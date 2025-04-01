@@ -1,7 +1,11 @@
 export const en = {
   header: {
     name: "Zeyu Li",
-    title: "Portfolio"
+    title: "Portfolio",
+    navigation: {
+      visualizations: "Data Visualization",
+      blog: "Blog"
+    }
   },
   hero: {
     title: "Zeyu Li",
@@ -391,5 +395,74 @@ All services run in Docker containers and are automatically deployed to Google C
     title: "Page Not Found",
     description: "The page you're looking for doesn't exist or has been moved.",
     backHome: "Back to Home"
+  },
+  visualizations: {
+    title: "Data Visualization",
+    d3: {
+      title: "D3.js Visualization",
+      description: "Create interactive data visualizations with D3.js",
+      viewDetails: "View Details"
+    },
+    helloworld: {
+      title: "Hello World",
+      description: "Simple Hello World example",
+      viewDetails: "View Details",
+      content: {
+        title: "Hello World Visualization",
+        clickMe: "Click Me!",
+        animating: "Animating...",
+        clicks: "Clicks: "
+      }
+    },
+    knowledgeGraph: {
+      title: "Knowledge Graph",
+      description: "Create knowledge graph visualization with D3.js",
+      viewDetails: "View Details"
+    },
+    audioWave: {
+      title: "Audio Visualization",
+      description: "Real-time audio waveform and spectrum analysis visualization",
+      startRecording: "Start Recording",
+      stopRecording: "Stop Recording",
+      micPermissionError: "Cannot access microphone, please ensure permission is granted",
+      viewDetails: "View Details",
+      controls: {
+        volume: "Volume",
+        smoothing: "Smoothing",
+        fftSize: "FFT Size",
+        theme: "Theme",
+      },
+      display: {
+        waveform: "Waveform",
+        spectrum: "Spectrum",
+        parameters: {
+          sampleRate: "Sample Rate",
+          fftSize: "FFT Size",
+          smoothing: "Smoothing",
+          volume: "Volume Gain"
+        }
+      }
+    },
+    guitarTuner: {
+      title: "Guitar Tuner",
+      description: "Real-time guitar tuner with standard tuning support",
+      startRecording: "Start Tuning",
+      stopRecording: "Stop Tuning",
+      micPermissionError: "Cannot access microphone, please ensure permission is granted",
+      strings: [
+        { note: "E2", frequency: 82.41, name: "6th String" },
+        { note: "A2", frequency: 110.00, name: "5th String" },
+        { note: "D3", frequency: 146.83, name: "4th String" },
+        { note: "G3", frequency: 196.00, name: "3rd String" },
+        { note: "B3", frequency: 246.94, name: "2nd String" },
+        { note: "E4", frequency: 329.63, name: "1st String" }
+      ],
+      tuner: {
+        perfect: "Perfect",
+        tooHigh: "Too High",
+        tooLow: "Too Low",
+        cents: "cents"
+      }
+    }
   }
 } as const; 
