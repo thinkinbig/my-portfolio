@@ -108,8 +108,6 @@ export default function GuitarTuner({
   // 预加载音频文件
   const preloadAudio = useCallback(async (audioUrl: string): Promise<HTMLAudioElement | null> => {
     try {
-      console.log('开始预加载音频:', audioUrl);
-      
       if (!audioUrl) {
         console.error('音频URL为空');
         return null;
@@ -117,26 +115,19 @@ export default function GuitarTuner({
 
       // 检查缓存
       if (audioCache.current.has(audioUrl)) {
-        console.log('使用缓存的音频:', audioUrl);
         return audioCache.current.get(audioUrl) || null;
       }
 
       // 创建音频元素
       const audio = new Audio();
       audio.preload = 'auto';
-      console.log('创建新的音频元素:', audioUrl);
       
       // 设置音频源
-      console.log('设置音频源:', audioUrl);
       audio.src = audioUrl;
       
       // 等待音频加载完成
       await new Promise<void>((resolve, reject) => {
-        const handleCanPlayThrough = () => {
-          console.log('音频可以播放:', audioUrl);
-          resolve();
-        };
-
+        const handleCanPlayThrough = () => resolve();
         const handleError = (e: ErrorEvent) => {
           console.error('音频加载错误:', audioUrl, e);
           reject(new Error(`加载音频失败: ${audioUrl}`));
@@ -145,8 +136,6 @@ export default function GuitarTuner({
         audio.addEventListener('canplaythrough', handleCanPlayThrough);
         audio.addEventListener('error', handleError as EventListener);
       });
-      
-      console.log('音频加载完成:', audioUrl);
       
       // 存入缓存
       audioCache.current.set(audioUrl, audio);
@@ -160,8 +149,6 @@ export default function GuitarTuner({
   // 播放音频
   const playAudio = useCallback(async (audioUrl: string): Promise<void> => {
     try {
-      console.log('尝试播放音频:', audioUrl);
-
       if (!audioUrl) {
         console.error('未提供音频URL');
         return;
@@ -170,14 +157,10 @@ export default function GuitarTuner({
       // 从缓存获取或加载音频
       let audio: HTMLAudioElement | undefined = audioCache.current.get(audioUrl);
       if (!audio) {
-        console.log('音频未缓存，开始加载:', audioUrl);
         const loadedAudio = await preloadAudio(audioUrl);
         if (loadedAudio) {
           audio = loadedAudio;
-          console.log('音频加载成功:', audioUrl);
         }
-      } else {
-        console.log('使用缓存的音频:', audioUrl);
       }
 
       if (!audio) {
@@ -187,32 +170,21 @@ export default function GuitarTuner({
 
       // 重置音频
       audio.currentTime = 0;
-      console.log('重置音频位置:', audioUrl);
       
       // 使用 Promise 包装音频播放
       const playPromise = new Promise<void>((resolve, reject) => {
-        const handleEnded = () => {
-          console.log('音频播放结束:', audioUrl);
-          resolve();
-        };
-
+        const handleEnded = () => resolve();
         const handleError = (e: ErrorEvent) => {
           console.error('播放音频错误:', audioUrl, e);
           reject(new Error(`播放音频失败: ${audioUrl}`));
         };
 
-        const handlePlay = () => {
-          console.log('音频开始播放:', audioUrl);
-        };
-
-        audio.addEventListener('play', handlePlay);
         audio.addEventListener('ended', handleEnded);
         audio.addEventListener('error', handleError as EventListener);
       });
 
       // 尝试播放
       try {
-        console.log('开始播放音频:', audioUrl);
         await audio.play();
         await playPromise;
       } catch (error) {
@@ -220,7 +192,6 @@ export default function GuitarTuner({
         // 尝试用户交互后播放
         const playOnInteraction = async () => {
           try {
-            console.log('用户交互后重新尝试播放:', audioUrl);
             await audio.play();
             await playPromise;
           } catch (e) {
@@ -239,27 +210,15 @@ export default function GuitarTuner({
   useEffect(() => {
     const loadAllAudio = async () => {
       try {
-        console.log('开始预加载所有音频文件');
-        console.log('当前 strings 数组:', strings);
+        const validStrings = strings.filter(string => string.audioUrl && string.audioUrl.trim() !== '');
         
-        const validStrings = strings.filter(string => {
-          const isValid = string.audioUrl && string.audioUrl.trim() !== '';
-          console.log(`检查音频URL: ${string.note} - ${string.audioUrl} - ${isValid ? '有效' : '无效'}`);
-          return isValid;
-        });
-
         if (validStrings.length === 0) {
           console.warn('没有找到有效的音频URL');
           return;
         }
 
-        const loadPromises = validStrings.map(string => {
-          console.log('开始预加载音频:', string.note, string.audioUrl);
-          return preloadAudio(string.audioUrl!);
-        });
-        
+        const loadPromises = validStrings.map(string => preloadAudio(string.audioUrl!));
         await Promise.all(loadPromises);
-        console.log('所有音频文件预加载完成');
       } catch (error) {
         console.error('音频预加载失败:', error);
       }
@@ -388,7 +347,6 @@ export default function GuitarTuner({
     const initAudioContext = async () => {
       try {
         if (!audioContextRef.current) {
-          // 使用类型断言先转换为 unknown，然后再转换为目标类型
           const webkitAudioContext = (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
           const AudioContextClass = window.AudioContext || webkitAudioContext;
           
@@ -398,7 +356,6 @@ export default function GuitarTuner({
           
           audioContextRef.current = new AudioContextClass();
           await audioContextRef.current.resume();
-          console.log('音频上下文初始化成功');
         }
       } catch (error) {
         console.error('初始化音频上下文失败:', error);
@@ -408,7 +365,6 @@ export default function GuitarTuner({
     initAudioContext();
 
     return () => {
-      // 清理音频上下文
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
