@@ -448,6 +448,7 @@ Alle Services laufen in Docker-Containern und werden automatisch über GitLab CI
       description: "Echtzeit-Gitarrenstimmer mit Standardstimmung",
       startRecording: "Stimmung starten",
       stopRecording: "Stimmung stoppen",
+      viewDetails: "Details anzeigen",
       micPermissionError: "Kein Zugriff auf das Mikrofon möglich. Bitte Berechtigung erteilen",
       strings: [
         { note: "E2", frequency: 82.41, name: "6. Saite" },

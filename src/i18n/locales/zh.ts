@@ -506,6 +506,7 @@ export const zh = {
       description: "实时吉他调音器，支持标准调弦",
       startRecording: "开始调音",
       stopRecording: "停止调音",
+      viewDetails: "查看详情",
       micPermissionError: "无法访问麦克风，请确保已授予权限",
       strings: [
         { note: "E2", frequency: 82.41, name: "第六弦" },

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from 'next-themes';
 import { getI18nText } from '@/i18n';
@@ -17,11 +17,39 @@ const languages: Record<Language, string> = {
 export function Header() {
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  // After mounting, we have access to the theme
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
+
+  // Prevent hydration mismatch by not rendering theme-dependent content until mounted
+  if (!mounted) {
+    return (
+      <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-b border-foreground/10 z-50">
+        <div className="container mx-auto px-4 h-full flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <Logo variant="header" />
+            <div>
+              <div className="font-semibold">
+                {getI18nText(language, 'header.name')}
+              </div>
+              <div className="text-xs text-secondary">
+                {getI18nText(language, 'header.title')}
+              </div>
+            </div>
+          </Link>
+          <div className="w-10 h-10" /> {/* Placeholder for theme toggle */}
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-background/80 backdrop-blur-sm border-b border-foreground/10 z-50">

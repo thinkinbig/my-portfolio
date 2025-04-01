@@ -448,6 +448,7 @@ All services run in Docker containers and are automatically deployed to Google C
       description: "Real-time guitar tuner with standard tuning support",
       startRecording: "Start Tuning",
       stopRecording: "Stop Tuning",
+      viewDetails: "View Details",
       micPermissionError: "Cannot access microphone, please ensure permission is granted",
       strings: [
         { note: "E2", frequency: 82.41, name: "6th String" },
