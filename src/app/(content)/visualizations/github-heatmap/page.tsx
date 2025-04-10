@@ -13,13 +13,8 @@ import {
 } from "recharts";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getI18nText } from "@/i18n";
-
-interface Contribution {
-  date: string;
-  commitCount: number;
-  additions: number;
-  deletions: number;
-}
+import { Contribution } from "@/types/github";
+import GitHubCalendar from "@/components/github/GitHubCalendar";
 
 interface GitHubHeatmapContent {
   title: string;
@@ -319,6 +314,13 @@ export default function GitHubHeatmapPage() {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* 添加GitHub日历组件 */}
+        <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+            <GitHubCalendar contributions={contributions} />
           </div>
         </div>
       </div>
