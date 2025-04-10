@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server';
-import { getDatabaseContent } from '../notion-service';
+import axios from 'axios';
 import { Concept } from '@/app/(content)/visualizations/knowledge-graph/types';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || '';
 
 async function getConcepts(databaseId: string): Promise<Concept[]> {
-  const response = await getDatabaseContent(databaseId);
-  const pages = response.content.results as PageObjectResponse[];
+  const response = await axios.post(`https://api.notion.com/v1/databases/${databaseId}/query`, {}, {
+    headers: {
+      'Authorization': `Bearer ${process.env.NOTION_TOKEN}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2021-05-13',
+    },
+  });
+
+  const pages = response.data.results as PageObjectResponse[];
   
   return pages.map(page => {
     const properties = page.properties;

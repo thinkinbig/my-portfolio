@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { queryDatabase } from './notion-service';
+import axios from 'axios';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -16,19 +16,25 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await queryDatabase(databaseId, {
-      pageSize: parseInt(pageSize || '100'),
+    const response = await axios.post(`https://api.notion.com/v1/databases/${databaseId}/query`, {
+      page_size: parseInt(pageSize || '100'),
       sorts: [
         {
           timestamp: sortBy || 'created_time',
           direction: sortDirection || 'descending',
         },
       ],
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.NOTION_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2021-05-13',
+      },
     });
 
     return NextResponse.json({
       success: true,
-      data: response,
+      data: response.data,
     });
   } catch (error) {
     console.error('Error fetching database:', error);

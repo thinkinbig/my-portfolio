@@ -457,70 +457,43 @@ export const zh = {
   visualizations: {
     title: "数据可视化",
     d3: {
-      title: "D3.js 可视化",
-      description: "使用 D3.js 创建交互式数据可视化",
+      title: "D3.js 示例",
+      description: "使用 D3.js 创建的数据可视化示例",
       viewDetails: "查看详情"
     },
     helloworld: {
       title: "Hello World",
-      description: "简单的 Hello World 示例",
-      viewDetails: "查看详情",
-      content: {
-        title: "Hello World 可视化",
-        clickMe: "点击我！",
-        animating: "动画中...",
-        clicks: "点击次数："
-      }
+      description: "简单的数据可视化示例",
+      viewDetails: "查看详情"
     },
     knowledgeGraph: {
       title: "知识图谱",
-      description: "使用 D3.js 创建知识图谱可视化",
+      description: "展示知识之间的关联关系",
       viewDetails: "查看详情"
     },
     audioWave: {
-      title: "音频可视化",
-      description: "实时音频波形和频谱分析可视化",
-      startRecording: "开始录音",
-      stopRecording: "停止录音",
-      micPermissionError: "无法访问麦克风，请确保已授予权限",
-      viewDetails: "查看详情",
-      controls: {
-        volume: "音量",
-        smoothing: "平滑度",
-        fftSize: "FFT大小",
-        theme: "主题",
-      },
-      display: {
-        waveform: "波形",
-        spectrum: "频谱",
-        parameters: {
-          sampleRate: "采样率",
-          fftSize: "FFT大小",
-          smoothing: "平滑系数",
-          volume: "音量增益"
-        }
-      }
+      title: "音频波形",
+      description: "实时音频波形可视化",
+      viewDetails: "查看详情"
     },
     guitarTuner: {
       title: "吉他调音器",
-      description: "实时吉他调音器，支持标准调弦",
-      startRecording: "开始调音",
-      stopRecording: "停止调音",
-      viewDetails: "查看详情",
-      micPermissionError: "无法访问麦克风，请确保已授予权限",
-      strings: [
-        { note: "E2", frequency: 82.41, name: "第六弦" },
-        { note: "A2", frequency: 110.00, name: "第五弦" },
-        { note: "D3", frequency: 146.83, name: "第四弦" },
-        { note: "G3", frequency: 196.00, name: "第三弦" },
-        { note: "B3", frequency: 246.94, name: "第二弦" },
-        { note: "E4", frequency: 329.63, name: "第一弦" }
-      ],
-      tuner: {
-        perfect: "完美",
-        tooHigh: "音高偏高",
-        tooLow: "音高偏低",
-        cents: "音分"
+      description: "基于 Web Audio API 的吉他调音工具",
+      viewDetails: "查看详情"
+    },
+    githubHeatmap: {
+      title: 'GitHub 贡献统计',
+      controls: {
+        chartType: {
+          line: '折线图',
+          bar: '柱状图'
+        },
+        timeGroup: {
+          day: '按天',
+          week: '按周',
+          month: '按月',
+          year: '按年'
+        }
       }
     }
   }

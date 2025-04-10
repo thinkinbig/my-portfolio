@@ -464,6 +464,23 @@ All services run in Docker containers and are automatically deployed to Google C
         tooLow: "Too Low",
         cents: "cents"
       }
+    },
+    githubHeatmap: {
+      title: "GitHub Contributions",
+      description: "Visualize your GitHub contributions over time",
+      viewDetails: "View Details",
+      controls: {
+        chartType: {
+          line: "Line Chart",
+          bar: "Bar Chart"
+        },
+        timeGroup: {
+          day: "Daily",
+          week: "Weekly",
+          month: "Monthly",
+          year: "Yearly"
+        }
+      }
     }
   }
 } as const; 
