@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { createAudioAnalyzer, cleanupAudioAnalyzer, updateAudioData, type AudioAnalyzer } from '@/utils/audio';
-import { updateCanvasSize, drawWaveform, drawSpectrum } from '@/utils/visualizer';
+import { createAudioAnalyzer, cleanupAudioAnalyzer, updateAudioData, type AudioAnalyzer } from '@/lib/audio';
+import { updateCanvasSize, drawWaveform, drawSpectrum } from '@/lib/visualizer';
 import { useTheme } from 'next-themes';
 
 interface AudioWaveVisualizerProps {
