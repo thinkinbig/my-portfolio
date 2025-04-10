@@ -6,8 +6,8 @@ import {
   cleanupAudioAnalyzer, 
   updateAudioData, 
   type AudioAnalyzer,
-} from '@/utils/audio';
-import { findFundamentalFrequency, medianFilter, calculateCents, findClosestNote } from '@/utils/audio/frequency';
+} from '@/lib/audio';
+import { findFundamentalFrequency, medianFilter, calculateCents, findClosestNote } from '@/lib/audio/frequency';
 import { useTheme } from 'next-themes';
 import TunerDisplay from './components/TunerDisplay';
 import GuitarStrings from './components/GuitarStrings';
