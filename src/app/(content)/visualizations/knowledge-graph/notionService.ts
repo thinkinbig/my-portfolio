@@ -1,4 +1,4 @@
-import { Concept } from './types';
+import { Concept } from '@/types/notion';
 
 export async function fetchConcepts(): Promise<Concept[]> {
   try {

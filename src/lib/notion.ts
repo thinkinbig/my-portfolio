@@ -67,6 +67,7 @@ export async function getConcepts(databaseId: string): Promise<Concept[]> {
     return await getConceptsV2(databaseId);
   } catch (error) {
     console.warn('V2 API failed, falling back to V1');
+    console.error(error);
     return getConceptsV1(databaseId);
   }
 } 
