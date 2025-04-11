@@ -483,6 +483,7 @@ export const zh = {
     },
     githubHeatmap: {
       title: 'GitHub 贡献统计',
+      description: '可视化你的 Github 贡献记录',
       viewDetails: '查看详情',
       controls: {
         chartType: {
