@@ -35,12 +35,45 @@ export interface GitHubEvent {
   created_at: string;
 }
 
+export interface GitHubVariables {
+  username: string;
+  limit: number;
+  historyLimit: number;
+}
+
 export interface GitHubCommit {
-  sha: string;
-  author: {
-    name: string;
-    email: string;
-  };
+  committedDate: string;
   message: string;
-  url: string;
-} 
+  additions: number;
+  deletions: number;
+}
+
+export interface RepositoryNode {
+  name: string;
+  defaultBranchRef: {
+    target: {
+      history: {
+        nodes: GitHubCommit[];
+      };
+    };
+  };
+}
+
+export interface GitHubData {
+  user: {
+    repositories: {
+      nodes: RepositoryNode[];
+    };
+  };
+}
+
+export interface GitHubResponse<T> {
+  data: T;
+  errors?: Array<{
+    message: string;
+    locations: Array<{
+      line: number;
+      column: number;
+    }>;
+  }>;
+}
