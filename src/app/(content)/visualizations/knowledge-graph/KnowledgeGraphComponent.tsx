@@ -1,12 +1,9 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import { Concept } from '@/types/notion';
-import { fetchConcepts } from './notionService';
 import styles from './KnowledgeGraph.module.css';
-
 // 添加视图类型枚举
 type ViewType = 'default' | 'courseware';
 
@@ -42,7 +39,7 @@ const useConcepts = () => {
       loadingRef.current = true;
       setLoading(true);
       setError(null);
-      const data = await fetchConcepts();
+      const data = await fetch('/api/notion/concepts').then(res => res.json());
       setConcepts(data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch concepts'));
@@ -62,13 +59,9 @@ const useConcepts = () => {
   return { concepts, loading, error, refetch: loadConcepts };
 };
 
-// 使用 dynamic 导入，禁用 SSR
-const KnowledgeGraphComponent = dynamic(() => Promise.resolve(KnowledgeGraphComponentInner), {
-  ssr: false
-});
 
 // 将主要组件逻辑移到内部组件
-function KnowledgeGraphComponentInner() {
+export default function KnowledgeGraphComponent() {
   const simulationRef = useRef<d3.Simulation<Node, Link> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<d3.Selection<SVGSVGElement, unknown, HTMLElement, undefined> | null>(null);
@@ -540,5 +533,3 @@ function KnowledgeGraphComponentInner() {
     </div>
   );
 }
-
-export default KnowledgeGraphComponent; 

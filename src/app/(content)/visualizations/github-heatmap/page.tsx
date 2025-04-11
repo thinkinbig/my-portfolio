@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import {
   Line,
   XAxis,
@@ -36,52 +36,70 @@ type TimeGroup = "day" | "week" | "month" | "year";
 
 export default function GitHubHeatmapPage() {
   const { language } = useLanguage();
-  const content = getI18nText<GitHubHeatmapContent>(language, 'visualizations.githubHeatmap');
+  const [content, setContent] = useState<GitHubHeatmapContent | null>(null);
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chartType, setChartType] = useState<"line" | "bar">("line");
   const [timeGroup, setTimeGroup] = useState<TimeGroup>("day");
 
-  useEffect(() => {
-    const fetchContributions = async () => {
-      try {
-        const response = await fetch(`/api/github?username=thinkinbig`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch contributions");
-        }
-        const data = await response.json();
-        setContributions(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // 使用 useMemo 缓存内容，只在语言变化时更新
+  const i18nContent = useMemo(() => {
+    try {
+      return getI18nText<GitHubHeatmapContent>(language, 'visualizations.githubHeatmap');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '加载内容失败');
+      return null;
+    }
+  }, [language]);
 
-    fetchContributions();
+  // 使用 useEffect 更新内容状态
+  useEffect(() => {
+    if (i18nContent) {
+      setContent(i18nContent);
+    }
+  }, [i18nContent]);
+
+  const fetchContributions = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/github?username=thinkinbig`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch contributions");
+      }
+      const data = await response.json();
+      setContributions(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const groupDataByTime = (
+  useEffect(() => {
+    fetchContributions();
+  }, [fetchContributions]);
+
+  const groupDataByTime = useCallback((
     data: Contribution[],
     group: TimeGroup
   ): Contribution[] => {
     const grouped = new Map<string, Contribution>();
 
     data.forEach((item) => {
-      const date = new Date(item.date);
+      // 使用固定的日期格式，避免时区问题
+      const date = new Date(item.date + 'T00:00:00Z');
       let key: string;
 
       switch (group) {
         case "week":
-          const week = Math.floor(date.getDate() / 7);
-          key = `${date.getFullYear()}-${date.getMonth() + 1}-W${week + 1}`;
+          const week = Math.floor(date.getUTCDate() / 7);
+          key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-W${week + 1}`;
           break;
         case "month":
-          key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+          key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
           break;
         case "year":
-          key = `${date.getFullYear()}`;
+          key = `${date.getUTCFullYear()}`;
           break;
         default:
           key = item.date;
@@ -105,12 +123,15 @@ export default function GitHubHeatmapPage() {
     return Array.from(grouped.values()).sort((a, b) =>
       a.date.localeCompare(b.date)
     );
-  };
+  }, []);
 
-  if (loading) return <div>Loading...</div>;
+  const groupedData = useMemo(() => 
+    groupDataByTime(contributions, timeGroup),
+    [contributions, timeGroup]
+  );
+
+  if (loading || !content) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-
-  const groupedData = groupDataByTime(contributions, timeGroup);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
