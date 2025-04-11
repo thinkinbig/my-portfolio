@@ -37,4 +37,3 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## TODO
 - 创建BlotSpinner组件以替代全局加载状态。
-- 使用next-i18n中间件代替手动实现。

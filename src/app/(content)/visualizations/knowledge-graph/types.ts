@@ -1,14 +1,4 @@
-export interface Concept {
-  id: string;
-  title: string;
-  category: string;
-  relatedCourseware: string[];
-  relatedConcepts: string[];
-  description?: string;
-  roles?: string[];
-  url: string;  // Notion 内部 URL
-  publicUrl: string;  // 公开访问 URL
-}
+import { Concept } from '@/types/notion';
 
 export interface GraphNode {
   id: string;
