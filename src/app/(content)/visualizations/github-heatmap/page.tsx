@@ -15,6 +15,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { getI18nText } from "@/i18n";
 import { Contribution } from "@/types/github";
 import GitHubCalendar from "@/components/github/GitHubCalendar";
+import { ReactCalendarHeatmapValue } from 'react-calendar-heatmap';
 
 interface GitHubHeatmapContent {
   title: string;
@@ -42,6 +43,7 @@ export default function GitHubHeatmapPage() {
   const [error, setError] = useState<string | null>(null);
   const [chartType, setChartType] = useState<"line" | "bar">("line");
   const [timeGroup, setTimeGroup] = useState<TimeGroup>("day");
+  const [hoveredContribution, setHoveredContribution] = useState<Contribution | null>(null);
 
   // 使用 useMemo 缓存内容，只在语言变化时更新
   const i18nContent = useMemo(() => {
@@ -127,8 +129,19 @@ export default function GitHubHeatmapPage() {
 
   const groupedData = useMemo(() => 
     groupDataByTime(contributions, timeGroup),
-    [contributions, timeGroup]
+    [contributions, timeGroup, groupDataByTime]
   );
+
+  // 处理日历单元格悬停事件的回调函数
+  const handleCellHover = useCallback((value: ReactCalendarHeatmapValue<string> | null) => {
+    if (value) {
+      // 根据日期查找对应的完整 contribution 数据
+      const fullContribution = contributions.find(c => c.date === value.date);
+      setHoveredContribution(fullContribution || null);
+    } else {
+      setHoveredContribution(null); // 鼠标离开时清空
+    }
+  }, [contributions]); // 依赖 contributions 数组
 
   if (loading || !content) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -341,7 +354,15 @@ export default function GitHubHeatmapPage() {
         {/* 添加GitHub日历组件 */}
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-            <GitHubCalendar contributions={contributions} />
+            <GitHubCalendar contributions={contributions} onCellHover={handleCellHover} />
+            {hoveredContribution && (
+              <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-md text-sm text-gray-700 dark:text-gray-200">
+                <p><strong>Date:</strong> {hoveredContribution.date}</p>
+                <p><strong>Commits:</strong> {hoveredContribution.commitCount}</p>
+                <p><strong>Additions:</strong> <span className="text-green-600 dark:text-green-400">+{hoveredContribution.additions}</span></p>
+                <p><strong>Deletions:</strong> <span className="text-red-600 dark:text-red-400">-{hoveredContribution.deletions}</span></p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -17,7 +17,7 @@ interface Node {
   fx?: number | null;
   fy?: number | null;
   color?: string;
-  courseware?: string;
+  courseware?: string[];
 }
 
 interface Link {
@@ -74,7 +74,9 @@ export default function KnowledgeGraphComponent() {
     const nodes: Node[] = concepts.map(concept => ({
       id: concept.id,
       name: concept.title,
-      courseware: concept.relatedCourseware?.[0] || '未分类'  // 获取第一个相关课程
+      courseware: concept.relatedCourseware && concept.relatedCourseware.length > 0 
+                    ? concept.relatedCourseware 
+                    : ['未分类']
     }));
 
     const links: Link[] = [];
@@ -94,7 +96,13 @@ export default function KnowledgeGraphComponent() {
 
   // 生成课程颜色映射
   const coursewareColors = useMemo(() => {
-    const uniqueCoursewares = Array.from(new Set(concepts.map(c => c.relatedCourseware?.[0] || '未分类')));
+    const uniqueCoursewares = Array.from(new Set(
+      concepts.flatMap(c => 
+        c.relatedCourseware && c.relatedCourseware.length > 0 
+          ? c.relatedCourseware 
+          : ['未分类']
+      )
+    ));
     const colorScale = d3.scaleOrdinal<string, string>(d3.schemeCategory10);
     return Object.fromEntries(
       uniqueCoursewares.map((courseware, index) => [courseware, colorScale(index.toString())])
@@ -182,16 +190,23 @@ export default function KnowledgeGraphComponent() {
           if (!sourceNode || !targetNode) {
             return 'var(--course-link-color)';
           }
-          if (sourceNode.courseware === targetNode.courseware) {
-            const color = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
-            return color ? color.copy({ opacity: 0.2 }).toString() : 'var(--course-link-color)';
+          const sourceCourses = sourceNode.courseware && sourceNode.courseware.length > 0 ? sourceNode.courseware : ['未分类'];
+          const targetCourses = targetNode.courseware && targetNode.courseware.length > 0 ? targetNode.courseware : ['未分类'];
+          const commonCourses = sourceCourses.filter(c => targetCourses.includes(c));
+          let baseColorStr: string | null = null;
+          if (commonCourses.length > 0) {
+            baseColorStr = coursewareColors[commonCourses[0]];
+          } else {
+            const sourceColor1 = d3.color(coursewareColors[sourceCourses[0]]);
+            const targetColor1 = d3.color(coursewareColors[targetCourses[0]]);
+            if (sourceColor1 && targetColor1) {
+              baseColorStr = d3.interpolateRgb(sourceColor1, targetColor1)(0.5).toString();
+            } else {
+              baseColorStr = sourceColor1?.toString() || targetColor1?.toString() || 'var(--course-link-color)';
+            }
           }
-          const sourceColor = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
-          const targetColor = d3.color(coursewareColors[targetNode.courseware || '未分类']);
-          if (sourceColor && targetColor) {
-            const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
-            return d3.color(mixedColor)?.copy({ opacity: 0.2 }).toString() || 'var(--course-link-color)';
-          }
+          const finalColor = d3.color(baseColorStr || 'var(--course-link-color)');
+          return finalColor ? finalColor.copy({ opacity: 0.2 }).toString() : 'var(--course-link-color)';
         }
         return 'var(--link-color)';
       })
@@ -205,7 +220,21 @@ export default function KnowledgeGraphComponent() {
       .enter()
       .append('circle')
       .attr('r', 12)
-      .attr('fill', d => viewType === 'courseware' ? coursewareColors[d.courseware || '未分类'] : 'var(--node-color)')
+      .attr('fill', d => {
+        if (viewType !== 'courseware') {
+          return 'var(--node-color)';
+        }
+        const courses = d.courseware && d.courseware.length > 0 ? d.courseware : ['未分类'];
+        if (courses.length === 1) {
+          return coursewareColors[courses[0]];
+        }
+        const color1 = d3.color(coursewareColors[courses[0]]);
+        const color2 = d3.color(coursewareColors[courses[1]]);
+        if (color1 && color2) {
+          return d3.interpolateRgb(color1, color2)(0.5).toString();
+        } 
+        return color1?.toString() || coursewareColors['未分类'];
+      })
       .attr('stroke', 'white')
       .attr('stroke-width', 2)
       .style('cursor', 'pointer')
@@ -227,7 +256,7 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 16)
-          .attr('fill', viewType === 'courseware' ? coursewareColors[currentNode.courseware || '未分类'] : 'var(--node-hover-color)');
+          .attr('fill', 'var(--node-hover-color)');
 
         // 高亮相连的节点
         node
@@ -241,11 +270,7 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 14)
-          .attr('fill', function(n) {
-            return viewType === 'courseware' 
-              ? coursewareColors[n.courseware || '未分类'] 
-              : 'var(--node-highlight-color)';
-          });
+          .attr('fill', 'var(--node-highlight-color)');
 
         // 高亮相连的连接线
         link
@@ -255,28 +280,9 @@ export default function KnowledgeGraphComponent() {
           )
           .transition()
           .duration(200)
-          .attr('stroke', function(l: Link) {
-            if (viewType === 'courseware') {
-              const otherNodeId = (l.source as Node).id === currentNode.id 
-                ? (l.target as Node).id 
-                : (l.source as Node).id;
-              const otherNode = nodes.find(n => n.id === otherNodeId);
-              const sourceColor = d3.color(coursewareColors[currentNode.courseware || '未分类']);
-              const targetColor = d3.color(coursewareColors[otherNode?.courseware || '未分类']);
-              
-              if (currentNode.courseware === otherNode?.courseware) {
-                return sourceColor?.copy({ opacity: 0.6 }).toString() || 'var(--course-link-highlight-color)';
-              }
-              
-              if (sourceColor && targetColor) {
-                const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
-                return d3.color(mixedColor)?.copy({ opacity: 0.6 }).toString() || 'var(--course-link-highlight-color)';
-              }
-            }
-            return 'var(--link-highlight-color)';
-          })
+          .attr('stroke', 'var(--link-highlight-color)')
           .attr('stroke-width', 2)
-          .attr('stroke-opacity', 0.4);
+          .attr('stroke-opacity', 0.6);
 
         // 淡化未连接的节点
         node
@@ -290,11 +296,7 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 8)
-          .attr('fill', function(n) {
-            return viewType === 'courseware' 
-              ? d3.color(coursewareColors[n.courseware || '未分类'])?.darker(0.5).toString() || 'var(--course-node-faded-color)'
-              : 'var(--node-faded-color)';
-          });
+          .attr('fill-opacity', 0.3);
 
         // 淡化未连接的连接线
         link
@@ -304,28 +306,8 @@ export default function KnowledgeGraphComponent() {
           )
           .transition()
           .duration(200)
-          .attr('stroke', l => {
-            if (viewType === 'courseware') {
-              const sourceNode = nodes.find(n => n.id === (l.source as Node).id);
-              const targetNode = nodes.find(n => n.id === (l.target as Node).id);
-              if (!sourceNode || !targetNode) {
-                return 'var(--course-link-faded-color)';
-              }
-              if (sourceNode.courseware === targetNode.courseware) {
-                const color = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
-                return color ? color.copy({ opacity: 0.1 }).toString() : 'var(--course-link-faded-color)';
-              }
-              const sourceColor = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
-              const targetColor = d3.color(coursewareColors[targetNode.courseware || '未分类']);
-              if (sourceColor && targetColor) {
-                const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
-                return d3.color(mixedColor)?.copy({ opacity: 0.1 }).toString() || 'var(--course-link-faded-color)';
-              }
-            }
-            return 'var(--link-faded-color)';
-          })
           .attr('stroke-width', 1)
-          .attr('stroke-opacity', 0.1);
+          .attr('stroke-opacity', 0.05);
 
         // 显示 tooltip
         const concept = concepts.find(c => c.id === currentNode.id);
@@ -354,28 +336,50 @@ export default function KnowledgeGraphComponent() {
           .transition()
           .duration(200)
           .attr('r', 12)
-          .attr('fill', d => viewType === 'courseware' ? coursewareColors[d.courseware || '未分类'] : 'var(--node-color)');
+          .attr('fill', d => {
+            if (viewType !== 'courseware') {
+              return 'var(--node-color)';
+            }
+            const courses = d.courseware && d.courseware.length > 0 ? d.courseware : ['未分类'];
+            if (courses.length === 1) {
+              return coursewareColors[courses[0]];
+            }
+            const color1 = d3.color(coursewareColors[courses[0]]);
+            const color2 = d3.color(coursewareColors[courses[1]]);
+            if (color1 && color2) {
+              return d3.interpolateRgb(color1, color2)(0.5).toString();
+            } 
+            return color1?.toString() || coursewareColors['未分类'];
+          })
+          .attr('fill-opacity', null);
 
         link
           .transition()
           .duration(200)
-          .attr('stroke', l => {
+          .attr('stroke', (l: Link) => {
             if (viewType === 'courseware') {
               const sourceNode = nodes.find(n => n.id === (l.source as Node).id);
               const targetNode = nodes.find(n => n.id === (l.target as Node).id);
               if (!sourceNode || !targetNode) {
                 return 'var(--course-link-color)';
               }
-              if (sourceNode.courseware === targetNode.courseware) {
-                const color = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
-                return color ? color.copy({ opacity: 0.2 }).toString() : 'var(--course-link-color)';
+              const sourceCourses = sourceNode.courseware && sourceNode.courseware.length > 0 ? sourceNode.courseware : ['未分类'];
+              const targetCourses = targetNode.courseware && targetNode.courseware.length > 0 ? targetNode.courseware : ['未分类'];
+              const commonCourses = sourceCourses.filter(c => targetCourses.includes(c));
+              let baseColorStr: string | null = null;
+              if (commonCourses.length > 0) {
+                baseColorStr = coursewareColors[commonCourses[0]];
+              } else {
+                const sourceColor1 = d3.color(coursewareColors[sourceCourses[0]]);
+                const targetColor1 = d3.color(coursewareColors[targetCourses[0]]);
+                if (sourceColor1 && targetColor1) {
+                  baseColorStr = d3.interpolateRgb(sourceColor1, targetColor1)(0.5).toString();
+                } else {
+                  baseColorStr = sourceColor1?.toString() || targetColor1?.toString() || 'var(--course-link-color)';
+                }
               }
-              const sourceColor = d3.color(coursewareColors[sourceNode.courseware || '未分类']);
-              const targetColor = d3.color(coursewareColors[targetNode.courseware || '未分类']);
-              if (sourceColor && targetColor) {
-                const mixedColor = d3.interpolateRgb(sourceColor, targetColor)(0.5);
-                return d3.color(mixedColor)?.copy({ opacity: 0.2 }).toString() || 'var(--course-link-color)';
-              }
+              const finalColor = d3.color(baseColorStr || 'var(--course-link-color)');
+              return finalColor ? finalColor.toString() : 'var(--course-link-color)';
             }
             return 'var(--link-color)';
           })

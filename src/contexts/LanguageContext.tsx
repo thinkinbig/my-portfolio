@@ -11,19 +11,27 @@ type LanguageContextType = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  // 从 localStorage 获取保存的语言设置，如果没有则使用默认值
-  const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language') as Language;
-      return savedLanguage || 'en';
-    }
-    return 'en';
-  });
+  // 始终以 'en' 作为初始值，确保服务器和客户端首次渲染一致
+  const [language, setLanguage] = useState<Language>('en');
+  // 使用一个状态来标记是否已从 localStorage 加载
+  const [isLocalStorageLoaded, setIsLocalStorageLoaded] = useState(false);
 
-  // 当语言改变时保存到 localStorage
+  // Effect 1: 仅在客户端首次挂载时从 localStorage 加载语言
   useEffect(() => {
-    localStorage.setItem('language', language);
-  }, [language]);
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && savedLanguage !== language) {
+      setLanguage(savedLanguage);
+    }
+    setIsLocalStorageLoaded(true); // 标记已加载
+  }, [language]); // 添加 language 依赖
+
+  // Effect 2: 当语言改变且已从 localStorage 加载后，保存到 localStorage
+  useEffect(() => {
+    // 仅在 localStorage 加载完成后才开始保存，避免覆盖初始加载的值
+    if (isLocalStorageLoaded) { 
+      localStorage.setItem('language', language);
+    }
+  }, [language, isLocalStorageLoaded]); // 依赖 language 和加载状态
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
