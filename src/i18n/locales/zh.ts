@@ -461,11 +461,6 @@ export const zh = {
       description: "使用 D3.js 创建的数据可视化示例",
       viewDetails: "查看详情"
     },
-    helloworld: {
-      title: "Hello World",
-      description: "简单的数据可视化示例",
-      viewDetails: "查看详情"
-    },
     knowledgeGraph: {
       title: "知识图谱",
       description: "展示知识之间的关联关系",

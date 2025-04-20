@@ -19,11 +19,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // Effect 1: 仅在客户端首次挂载时从 localStorage 加载语言
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && savedLanguage !== language) {
+    if (savedLanguage) {
       setLanguage(savedLanguage);
+    } else {
+      // 获取浏览器默认语言
+      const browserLanguage = navigator.language.split('-')[0] as Language;
+      // 检查浏览器语言是否在支持的语言列表中
+      const supportedLanguages: Language[] = ['en', 'zh', 'de'];
+      const defaultLanguage = supportedLanguages.includes(browserLanguage) ? browserLanguage : 'en';
+      setLanguage(defaultLanguage);
     }
     setIsLocalStorageLoaded(true); // 标记已加载
-  }, [language]); // 添加 language 依赖
+  }, []); // 确保只在挂载时运行一次
 
   // Effect 2: 当语言改变且已从 localStorage 加载后，保存到 localStorage
   useEffect(() => {

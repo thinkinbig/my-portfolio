@@ -3,7 +3,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getI18nText } from '@/i18n';
 import { useState, useEffect } from 'react';
-import { HelloWorldContent } from './helloworld/page';
 
 interface VisualizationContent {
   title: string;
@@ -16,7 +15,6 @@ interface VisualizationContent {
     title: string;
     description: string;
     viewDetails: string;
-    content?: HelloWorldContent;
   };
   knowledgeGraph: {
     title: string;
@@ -96,82 +94,62 @@ export default function VisualizationsPage() {
     );
   }
 
+  const visualizationItems = [
+    {
+      key: 'd3',
+      title: content.d3.title,
+      description: content.d3.description,
+      viewDetails: content.d3.viewDetails,
+      href: '/visualizations/d3'
+    },
+    {
+      key: 'knowledgeGraph',
+      title: content.knowledgeGraph.title,
+      description: content.knowledgeGraph.description,
+      viewDetails: content.knowledgeGraph.viewDetails,
+      href: '/visualizations/knowledge-graph'
+    },
+    {
+      key: 'audioWave',
+      title: content.audioWave.title,
+      description: content.audioWave.description,
+      viewDetails: content.audioWave.viewDetails,
+      href: '/visualizations/audio-wave'
+    },
+    {
+      key: 'guitarTuner',
+      title: content.guitarTuner.title,
+      description: content.guitarTuner.description,
+      viewDetails: content.guitarTuner.viewDetails,
+      href: '/visualizations/guitar-tuner'
+    },
+    {
+      key: 'githubHeatmap',
+      title: content.githubHeatmap.title,
+      description: content.githubHeatmap.description,
+      viewDetails: content.githubHeatmap.viewDetails,
+      href: '/visualizations/github-heatmap'
+    }
+  ];
+
   return (
     <div className="p-6">
       <h1 className="text-4xl font-bold mb-8">{content.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">{content.d3.title}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
-            {content.d3.description}
-          </p>
-          <a
-            href="/visualizations/d3"
-            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-          >
-            {content.d3.viewDetails}
-          </a>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">{content.helloworld.title}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
-            {content.helloworld.description}
-          </p>
-          <a
-            href="/visualizations/helloworld"
-            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-          >
-            {content.helloworld.viewDetails}
-          </a>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">{content.knowledgeGraph.title}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
-            {content.knowledgeGraph.description}
-          </p>
-          <a
-            href="/visualizations/knowledge-graph"
-            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-          >
-            {content.knowledgeGraph.viewDetails}
-          </a>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">{content.audioWave.title}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
-            {content.audioWave.description}
-          </p>
-          <a
-            href="/visualizations/audio-wave"
-            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-          >
-            {content.audioWave.viewDetails}
-          </a>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">{content.guitarTuner.title}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
-            {content.guitarTuner.description}
-          </p>
-          <a
-            href="/visualizations/guitar-tuner"
-            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-          >
-            {content.guitarTuner.viewDetails}
-          </a>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-2">{content.githubHeatmap.title}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
-            {content.githubHeatmap.description}
-          </p>
-          <a
-            href="/visualizations/github-heatmap"
-            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
-          >
-            {content.githubHeatmap.viewDetails}
-          </a>
-        </div>
+        {visualizationItems.map((item) => (
+          <div key={item.key} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              {item.description}
+            </p>
+            <a
+              href={item.href}
+              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline"
+            >
+              {item.viewDetails}
+            </a>
+          </div>
+        ))}
       </div>
     </div>
   );
